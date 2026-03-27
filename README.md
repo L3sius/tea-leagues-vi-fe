@@ -29,8 +29,6 @@ src/
 ├── components/
 │   ├── SiteHeader.vue       # Logo, title, live badge
 │   ├── LiveFeed.vue         # Scrolling event feed (auto-ticks every 4s)
-│   ├── GpTracker.vue        # GP leaderboard + clan goal bar
-│   └── ItemsTracker.vue     # Item drop counts + notable drops
 └── data/
     └── mockData.js          # Placeholder data — swap with real API
 ```

@@ -2,7 +2,7 @@
     <section class="stat-trackers">
         <div class="section-header">
             <h2 class="section-title">Clan Stats</h2>
-            <p class="section-subtitle">Top 5 shown</p>
+            <p class="section-subtitle">Live · Click to expand</p>
         </div>
 
         <div class="trackers-list">
@@ -20,7 +20,7 @@
                         <span class="card-leader">
                             #1 {{ topPlayer(tracker.key)?.name }}
                             <span class="leader-val">{{ tracker.format(topPlayer(tracker.key)?.[tracker.key] ?? 0)
-                            }}</span>
+                                }}</span>
                         </span>
                         <button class="expand-btn" :aria-label="expanded[tracker.key] ? 'Collapse' : 'Expand'">
                             <span class="expand-chevron" :class="{ 'is-open': expanded[tracker.key] }">▾</span>
@@ -28,34 +28,20 @@
                     </div>
                 </div>
 
-                <div class="leaderboard">
-                    <div v-for="(player, idx) in topN(tracker.key, 5)" :key="player.id" class="lb-row"
-                        :class="{ 'lb-row--gold': idx === 0, 'lb-row--silver': idx === 1, 'lb-row--bronze': idx === 2 }">
-                        <span class="lb-pos">{{ idx + 1 }}</span>
-                        <span class="lb-name">{{ player.name }}</span>
-                        <div class="lb-bar-wrap">
-                            <div class="lb-bar"
-                                :class="{ 'lb-bar--gold': idx === 0, 'lb-bar--bad': tracker.key === 'deaths' }"
-                                :style="{ width: barWidth(player[tracker.key], tracker.key) + '%' }"></div>
-                        </div>
-                        <span class="lb-val" :class="{ 'lb-val--bad': tracker.key === 'deaths' }">
-                            {{ tracker.format(player[tracker.key]) }}
-                        </span>
-                    </div>
-                </div>
-
                 <Transition name="expand">
-                    <div v-if="expanded[tracker.key]" class="leaderboard leaderboard--rest">
-                        <div class="expand-divider"><span>— rest of clan —</span></div>
-                        <div v-for="(player, idx) in restN(tracker.key, 5)" :key="player.id"
-                            class="lb-row lb-row--rest">
-                            <span class="lb-pos">{{ idx + 6 }}</span>
+                    <div v-if="expanded[tracker.key]" class="leaderboard">
+                        <div v-for="(player, idx) in sorted(tracker.key)" :key="player.id" class="lb-row"
+                            :class="{ 'lb-row--gold': idx === 0, 'lb-row--silver': idx === 1, 'lb-row--bronze': idx === 2 }">
+                            <span class="lb-pos">{{ idx + 1 }}</span>
                             <span class="lb-name">{{ player.name }}</span>
                             <div class="lb-bar-wrap">
-                                <div class="lb-bar lb-bar--rest" :class="{ 'lb-bar--bad': tracker.key === 'deaths' }"
+                                <div class="lb-bar"
+                                    :class="{ 'lb-bar--gold': idx === 0, 'lb-bar--bad': tracker.key === 'deaths' }"
                                     :style="{ width: barWidth(player[tracker.key], tracker.key) + '%' }"></div>
                             </div>
-                            <span class="lb-val lb-val--dim">{{ tracker.format(player[tracker.key]) }}</span>
+                            <span class="lb-val" :class="{ 'lb-val--bad': tracker.key === 'deaths' }">
+                                {{ tracker.format(player[tracker.key]) }}
+                            </span>
                         </div>
                     </div>
                 </Transition>
@@ -66,10 +52,9 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, onUnmounted } from 'vue'
-import { CLAN_PLAYERS } from '@/data/mockData.js'
+import { reactive } from 'vue'
+import { players } from '@/stores/statsStore.js'
 
-const players = ref(CLAN_PLAYERS.map(p => ({ ...p })))
 const expanded = reactive({})
 function toggle(key) { expanded[key] = !expanded[key] }
 
@@ -94,27 +79,7 @@ function barWidth(val, key) {
     return max === 0 ? 0 : Math.round((val / max) * 100)
 }
 
-const TICK_MAP = {
-    gpEarned: () => Math.floor(Math.random() * 400_000) + 50_000,
-    itemsReceived: () => 1,
-    levelsEarned: () => 1,
-    petsEarned: () => Math.random() < 0.05 ? 1 : 0,
-    deaths: () => Math.random() < 0.1 ? 1 : 0,
-    clogsEarned: () => Math.random() < 0.2 ? 1 : 0,
-    combatTasks: () => Math.random() < 0.15 ? 1 : 0,
-    clueScrolls: () => Math.random() < 0.1 ? 1 : 0,
-}
 
-let timer = null
-onMounted(() => {
-    timer = setInterval(() => {
-        const idx = Math.floor(Math.random() * players.value.length)
-        const key = Object.keys(TICK_MAP)[Math.floor(Math.random() * Object.keys(TICK_MAP).length)]
-        const delta = TICK_MAP[key]()
-        if (delta > 0) players.value[idx][key] += delta
-    }, 3500)
-})
-onUnmounted(() => clearInterval(timer))
 </script>
 
 <style scoped>
@@ -132,7 +97,7 @@ onUnmounted(() => clearInterval(timer))
 
 .section-title {
     font-family: var(--font-heading);
-    font-size: 24px;
+    font-size: 29px;
     font-weight: 700;
     color: var(--soul-gold);
     letter-spacing: 2px;
@@ -140,7 +105,7 @@ onUnmounted(() => clearInterval(timer))
 }
 
 .section-subtitle {
-    font-size: 14px;
+    font-size: 21px;
     color: var(--ash);
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -192,7 +157,7 @@ onUnmounted(() => clearInterval(timer))
 
 .card-label {
     font-family: var(--font-subhead);
-    font-size: 13px;
+    font-size: 19px;
     letter-spacing: 1.5px;
     text-transform: uppercase;
     color: var(--ash);
@@ -201,7 +166,7 @@ onUnmounted(() => clearInterval(timer))
 
 .card-total {
     font-family: var(--font-subhead);
-    font-size: 22px;
+    font-size: 30px;
     font-weight: 700;
     color: var(--soul-gold);
     line-height: 1;
@@ -223,7 +188,7 @@ onUnmounted(() => clearInterval(timer))
 
 .card-leader {
     font-family: var(--font-subhead);
-    font-size: 13px;
+    font-size: 19px;
     color: var(--ash);
     white-space: nowrap;
     display: flex;
@@ -257,7 +222,7 @@ onUnmounted(() => clearInterval(timer))
 
 .expand-chevron {
     color: var(--ash);
-    font-size: 16px;
+    font-size: 19px;
     line-height: 1;
     transition: transform 0.25s ease;
     display: block;
@@ -304,7 +269,7 @@ onUnmounted(() => clearInterval(timer))
 
 .lb-pos {
     font-family: var(--font-subhead);
-    font-size: 13px;
+    font-size: 19px;
     color: var(--ash);
     width: 18px;
     text-align: right;
@@ -325,7 +290,7 @@ onUnmounted(() => clearInterval(timer))
 
 .lb-name {
     font-family: var(--font-subhead);
-    font-size: 14px;
+    font-size: 21px;
     width: 130px;
     flex-shrink: 0;
     white-space: nowrap;
@@ -363,7 +328,7 @@ onUnmounted(() => clearInterval(timer))
 
 .lb-val {
     font-family: var(--font-subhead);
-    font-size: 14px;
+    font-size: 21px;
     font-weight: 600;
     color: var(--soul-gold);
     flex-shrink: 0;
@@ -385,7 +350,7 @@ onUnmounted(() => clearInterval(timer))
 }
 
 .expand-divider span {
-    font-size: 12px;
+    font-size: 18px;
     color: rgba(122, 106, 90, 0.45);
     font-style: italic;
     letter-spacing: 1px;

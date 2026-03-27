@@ -2,37 +2,65 @@
   <video class="bg-video" src="/bg.webm" autoplay loop muted playsinline></video>
   <div class="bg-overlay"></div>
 
-  <!-- <SiteHeader :playerCount="players.length" /> -->
-
   <div class="side-layout">
+
+    <!-- LEFT: Live Feed -->
     <aside class="side-panel side-left">
       <LiveFeed />
     </aside>
 
+    <!-- MIDDLE: empty (desktop only) -->
     <div class="middle-void" aria-hidden="true"></div>
 
+    <!-- RIGHT: toggled content -->
     <aside class="side-panel side-right">
-      <StatTrackers />
-      <div class="col-spacer"></div>
-      <Milestones />
-      <div class="col-spacer"></div>
-      <LeaguePoints />
+
+      <div class="panel-toggles">
+        <button class="toggle-btn" :class="{ 'toggle-btn--active': activePanel === 'stats' }"
+          @click="activePanel = 'stats'">
+          ⚔ Clan Stats
+        </button>
+        <button class="toggle-btn" :class="{ 'toggle-btn--active': activePanel === 'milestones' }"
+          @click="activePanel = 'milestones'">
+          ⸸ Milestones
+        </button>
+      </div>
+
+      <template v-if="activePanel === 'stats'">
+        <StatTrackers />
+        <div class="col-spacer"></div>
+        <LeaguePoints />
+      </template>
+
+      <template v-else>
+        <Milestones />
+      </template>
+
     </aside>
   </div>
 </template>
 
 <script setup>
-import SiteHeader from '@/components/SiteHeader.vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import LiveFeed from '@/components/LiveFeed.vue'
 import StatTrackers from '@/components/StatTrackers.vue'
 import Milestones from '@/components/Milestones.vue'
 import LeaguePoints from '@/components/LeaguePoints.vue'
-import { CLAN_PLAYERS } from '@/data/mockData.js'
+import { initStats, closeStats } from '@/stores/statsStore.js'
 
-const players = CLAN_PLAYERS
+const activePanel = ref('stats')
+
+onMounted(initStats)
+onUnmounted(closeStats)
 </script>
 
 <style>
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html,
 body,
 #app {
@@ -40,7 +68,27 @@ body,
   padding: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden;
+}
+
+/* Desktop: no page scroll, panels scroll independently */
+@media (min-width: 769px) {
+
+  html,
+  body,
+  #app {
+    overflow: hidden;
+  }
+}
+
+/* Mobile: page itself scrolls */
+@media (max-width: 768px) {
+
+  html,
+  body,
+  #app {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
 }
 </style>
 
@@ -66,42 +114,139 @@ body,
     rgba(5, 0, 0, 0.45);
 }
 
+/* ── Desktop layout ──────────────────────────────────────────────────────── */
 .side-layout {
   position: fixed;
-  /* Use CSS var so we only tweak one number if header height changes */
-  --header-h: 121px;
-  top: var(--header-h);
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   display: grid;
-  grid-template-columns: 420px 1fr 460px;
+  grid-template-columns: 500px 1fr 540px;
   z-index: 1;
 }
 
 .side-panel {
   min-height: 0;
+  height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 20px 16px 40px;
+  padding: 28px 20px 60px;
   scrollbar-width: thin;
   scrollbar-color: var(--blood-red) transparent;
 }
 
 .side-left {
-  background: linear-gradient(90deg, rgba(5, 0, 0, 0.65) 0%, rgba(5, 0, 0, 0.15) 100%);
+  background: linear-gradient(90deg, rgba(5, 0, 0, 0.72) 0%, rgba(5, 0, 0, 0.18) 100%);
 }
 
 .side-right {
-  background: linear-gradient(270deg, rgba(5, 0, 0, 0.65) 0%, rgba(5, 0, 0, 0.15) 100%);
+  background: linear-gradient(270deg, rgba(5, 0, 0, 0.72) 0%, rgba(5, 0, 0, 0.18) 100%);
 }
 
 .middle-void {
   pointer-events: none;
 }
 
+/* ── Mobile layout ───────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .side-layout {
+    position: relative;
+    inset: auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+  }
+
+  .side-panel {
+    height: auto;
+    min-height: 100vh;
+    overflow-y: visible;
+    overflow-x: hidden;
+    padding: 24px 16px 40px;
+  }
+
+  /* On mobile both panels get full-width solid backgrounds */
+  .side-left {
+    background: rgba(5, 0, 0, 0.78);
+  }
+
+  .side-right {
+    background: rgba(5, 0, 0, 0.78);
+  }
+
+  .middle-void {
+    display: none;
+  }
+}
+
+/* ── Toggle buttons ──────────────────────────────────────────────────────── */
+.panel-toggles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.toggle-btn {
+  font-family: var(--font-subhead);
+  font-size: 15px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ash);
+  background: rgba(18, 2, 2, 0.75);
+  border: 1px solid rgba(139, 0, 0, 0.45);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.toggle-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 60, 0, 0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.toggle-btn:hover {
+  color: var(--ember);
+  border-color: var(--blood-red);
+  background: rgba(139, 0, 0, 0.2);
+  box-shadow: 0 0 16px rgba(139, 0, 0, 0.3);
+}
+
+.toggle-btn--active {
+  color: var(--soul-gold);
+  background: rgba(139, 0, 0, 0.35);
+  border-color: var(--crimson);
+  box-shadow:
+    0 0 20px rgba(139, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 107, 53, 0.15);
+  text-shadow: 0 0 10px rgba(255, 179, 71, 0.5);
+}
+
+.toggle-btn--active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--ember), transparent);
+  box-shadow: 0 0 8px var(--ember);
+}
+
+@media (max-width: 768px) {
+  .toggle-btn {
+    font-size: 13px;
+    padding: 10px 12px;
+    letter-spacing: 1px;
+  }
+}
+
 .col-spacer {
-  height: 24px;
+  height: 28px;
   flex-shrink: 0;
 }
 </style>

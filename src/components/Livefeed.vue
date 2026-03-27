@@ -1,101 +1,281 @@
 <template>
     <section class="live-feed-section">
         <div class="section-header">
-            <div class="section-title-group">
-                <h2 class="section-title">
-                    <span class="title-deco">⸸</span>
-                    Live Feed
-                    <span class="title-deco">⸸</span>
-                </h2>
-            </div>
-            <div class="feed-controls">
-                <span class="event-count">{{ events.length }} events</span>
+            <h2 class="section-title">
+                <span class="title-deco">⸸</span>
+                Live Feed
+                <span class="title-deco">⸸</span>
+            </h2>
+            <div class="feed-status">
+                <span class="status-dot" :class="statusClass"></span>
+                <span class="status-label">{{ statusLabel }}</span>
+                <span class="event-count" v-if="connected">{{ events.length }} events</span>
             </div>
         </div>
 
-        <div class="feed-container panel" ref="feedContainer">
-            <div class="feed-inner">
+        <div class="feed-container panel">
+            <div class="feed-inner" v-if="events.length > 0">
                 <TransitionGroup name="feed-event" tag="div" class="events-list">
-                    <div v-for="event in displayedEvents" :key="event.id" class="event-row"
-                        :class="`event-type--${event.type}`">
+                    <div v-for="event in events" :key="event.id" class="event-row"
+                        :class="[`event-type--${event.type}`, { 'event--fail': !event.isSuccess }]">
                         <span class="event-time">{{ event.time }}</span>
                         <span class="event-player">{{ event.player }}</span>
-                        <span class="event-message">{{ event.message }}</span>
-                        <span v-if="event.value" class="event-value">{{ formatGP(event.value) }}</span>
+                        <!-- LOOT / CLUE: hoverable source with tooltip -->
+                        <span v-if="event.lootSource" class="event-message loot-source"
+                            :class="{ 'clue-source': event.type === 'clue' }"
+                            @mouseenter="showTooltip($event, event.lootItems)" @mouseleave="hideTooltip">
+                            {{ event.lootSource }}
+                        </span>
+                        <span v-else class="event-message">{{ event.message }}</span>
                     </div>
                 </TransitionGroup>
             </div>
+
+            <!-- Empty / disconnected state -->
+            <div class="feed-empty" v-else>
+                <span class="empty-icon">⸸</span>
+                <span class="empty-text" v-if="disconnected">Connection lost — awaiting reconnect</span>
+                <span class="empty-text" v-else>Awaiting events...</span>
+            </div>
+
+            <div class="feed-fade" v-if="events.length > 0"></div>
         </div>
     </section>
+
+    <div class="loot-tooltip" v-if="tooltip.visible" :style="tooltip.style">
+        {{ tooltip.text }}
+    </div>
+
 </template>
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { LIVE_FEED_EVENTS } from '@/data/mockData.js'
+import apiService from '@/services/apiService.js'
 
-const paused = ref(false)
-const events = ref([...LIVE_FEED_EVENTS])
-const maxShown = 50
+const events = ref([])
+const connected = ref(false)
+const disconnected = ref(false)
+let eventSource = null
+let nextId = 1
 
-const displayedEvents = computed(() => events.value.slice(0, maxShown))
+const tooltip = ref({ visible: false, text: '', style: {} })
 
-const NEW_EVENT_TEMPLATES = [
-    { type: 'drop', messages: ['received Uncut Onyx', 'found Ranger Boots', 'looted Dark Bow'] },
-    { type: 'gp', messages: ['earned 1.4M from CoX', 'collected 3.2M from ToB', 'banked 850K'] },
-    { type: 'kill', messages: ['killed Thermonuclear Smoke Devil', 'slew Nightmare', 'cleared Chambers of Xeric'] },
-    { type: 'level', messages: ['reached 99 Slayer', 'levelled up Strength', 'hit 99 Ranged'] },
-    { type: 'pet', messages: ['received Chompy chick', 'got Heron pet', 'unlocked Rocky pet'] },
-    { type: 'death', messages: ['died to Vorkath', 'killed by Cerberus', 'lost a fight at Zulrah'] },
-    { type: 'clog', messages: ['new collection log slot', 'added Bandos item to clog', 'updated collection log'] },
-    { type: 'combat', messages: ['completed Elite Combat Task', 'finished Hard Combat Task', 'unlocked combat achievement'] },
-    { type: 'clue', messages: ['completed Master Clue', 'finished Hard Clue Scroll', 'opened Elite Clue reward'] },
-]
-
-const PLAYERS = ['HellWalker', 'DemonSlayer99', 'BoneCrusherX', 'SoulReaper_VII', 'AbyssWarden', 'RuneWitch666']
-
-let timer = null
-let nextId = LIVE_FEED_EVENTS.length + 1
-
-function spawnEvent() {
-    if (paused.value) return
-    const tmpl = NEW_EVENT_TEMPLATES[Math.floor(Math.random() * NEW_EVENT_TEMPLATES.length)]
-    const msg = tmpl.messages[Math.floor(Math.random() * tmpl.messages.length)]
-    const player = PLAYERS[Math.floor(Math.random() * PLAYERS.length)]
-    const value = tmpl.type === 'gp' ? Math.floor(Math.random() * 8_000_000) + 500_000
-        : tmpl.type === 'drop' ? Math.floor(Math.random() * 20_000_000) + 200_000
-            : null
-    events.value.unshift({ id: nextId++, player, type: tmpl.type, message: msg, value, time: 'just now' })
-    if (events.value.length > 200) events.value.pop()
+function showTooltip(e, items) {
+    const rect = e.target.getBoundingClientRect()
+    tooltip.value = {
+        visible: true,
+        text: items,
+        style: {
+            left: rect.left + rect.width / 2 + 'px',
+            top: rect.top - 12 + 'px',
+            transform: 'translateX(-50%) translateY(-100%)',
+        }
+    }
 }
 
-function formatGP(val) {
-    if (val >= 1_000_000) return `${(val / 1_000_000).toFixed(1)}M gp`
-    if (val >= 1_000) return `${(val / 1_000).toFixed(0)}K gp`
-    return `${val} gp`
+function hideTooltip() {
+    tooltip.value.visible = false
 }
 
-onMounted(() => { timer = setInterval(spawnEvent, 4000) })
-onUnmounted(() => clearInterval(timer))
+// ── Message parser ────────────────────────────────────────────────────────────
+// Message format: [TYPE] [PLAYER] rest of description
+// e.g. "[LOOT] [L3sius] [Redwood Bird House] [...]"
+// e.g. "[DEATH] [L3sius] L3sius has died..."
+
+const TYPE_MAP = {
+    'LOOT': 'drop',
+    'DEATH': 'death',
+    'LEVEL': 'level',
+    'PET': 'pet',
+    'CLOG': 'clog',
+    'COLLECTION': 'clog',
+    'COMBAT_ACHIEVEMENT': 'combat',
+    'CLUE': 'clue',
+}
+
+function parseMessage(raw, isSuccess) {
+    const bracketRe = /\[([^\]]+)\]/g
+    const tokens = []
+    let match
+
+    while ((match = bracketRe.exec(raw)) !== null) {
+        tokens.push(match[1])
+    }
+
+    const rawType = tokens[0]?.toUpperCase() ?? 'INFO'
+    const player = tokens[1] ?? '?'
+    const mapped = TYPE_MAP[rawType] ?? 'kill'
+
+    // LOOT: tokens[2] = source, tokens[3] = comma-separated items
+    let message = ''
+    let lootSource = null
+    let lootItems = null
+
+    if (rawType === 'LOOT') {
+        lootSource = tokens[2] ?? 'Unknown'
+        lootItems = tokens[3] ?? ''
+        message = lootSource
+    } else if (rawType === 'CLUE') {
+        // Extract tier from "completed a [hard](...) clue"
+        const tierMatch = raw.match(/completed a \[([^\]]+)\]/i)
+        lootSource = tierMatch ? tierMatch[1].charAt(0).toUpperCase() + tierMatch[1].slice(1) : 'Clue'
+
+        // Extract item names from markdown links: [Item name](url) preceded by "X x "
+        const itemRe = /\d+ x \[([^\]]+)\]/g
+        const items = []
+        let m
+        while ((m = itemRe.exec(raw)) !== null) {
+            items.push(m[1])
+        }
+        lootItems = items.length > 0 ? items.join(', ') : ''
+        message = lootSource
+    } else if (rawType === 'DEATH') {
+        const DEATH_MESSAGES = [
+            'Died horribly, like a noob.',
+            'Lost their hardcore status... again.',
+            'Respawned in Lumbridge. Classic.',
+            'The Grim Reaper sends his regards.',
+            'Forgot to eat. Tragic.',
+            'Paid the ultimate price for being AFK.',
+            'Even the monsters felt bad about that.',
+            'Death speedrun any%.',
+            'Skill issue.',
+            'Couldn\'t dodge a single attack.',
+        ]
+        message = DEATH_MESSAGES[Math.floor(Math.random() * DEATH_MESSAGES.length)]
+    } else if (rawType === 'LEVEL') {
+        const skillMatch = raw.match(/levelled \[([^\]]+)\]/i)
+        const levelMatch = raw.match(/to (\d+)/)
+        const skill = skillMatch ? skillMatch[1] : 'a skill'
+        const level = levelMatch ? levelMatch[1] : '?'
+        message = `Levelled ${skill} to ${level}`
+    } else if (rawType === 'COMBAT_ACHIEVEMENT') {
+        const tierMatch = raw.match(/completed (\w+) combat task/i)
+        const taskMatch = raw.match(/\[([^\]]+)\]\(http/i)
+        const tier = tierMatch ? tierMatch[1] : 'a'
+        const task = taskMatch ? taskMatch[1] : null
+        message = `Completed ${tier} combat task`
+        if (task) {
+            lootSource = message
+            lootItems = task
+            message = lootSource
+        }
+    } else {
+        const remaining = tokens.slice(2)
+        message = remaining.length > 0
+            ? remaining.join(', ')
+            : raw.replace(/\[[^\]]+\]/g, '').trim()
+    }
+
+    return { player, type: mapped, message, isSuccess, lootSource, lootItems }
+}
+
+function formatTime(timestamp) {
+    const date = new Date(timestamp * 1000)
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+}
+
+function addEvent(data, prepend = true) {
+    const parsed = parseMessage(data.message, data.is_success_action ?? true)
+    const entry = {
+        id: nextId++,
+        time: formatTime(data.timestamp),
+        player: parsed.player,
+        type: parsed.type,
+        message: parsed.message,
+        isSuccess: parsed.isSuccess,
+        lootSource: parsed.lootSource ?? null,
+        lootItems: parsed.lootItems ?? null,
+    }
+    if (prepend) {
+        events.value.unshift(entry)
+        // Cap at 200 entries
+        if (events.value.length > 200) events.value.pop()
+    } else {
+        events.value.push(entry)
+    }
+}
+
+// ── SSE connection ────────────────────────────────────────────────────────────
+function connect() {
+    disconnected.value = false
+
+    try {
+        eventSource = apiService.getActionStream()
+    } catch {
+        disconnected.value = true
+        return
+    }
+
+    const historyBuffer = []
+
+    eventSource.addEventListener('history', (e) => {
+        try {
+            historyBuffer.push(JSON.parse(e.data))
+        } catch { /* ignore malformed */ }
+    })
+
+    eventSource.addEventListener('action', (e) => {
+        try {
+            addEvent(JSON.parse(e.data), true)
+        } catch { /* ignore malformed */ }
+    })
+
+    eventSource.onopen = () => {
+        connected.value = true
+        disconnected.value = false
+        setTimeout(() => {
+            // Server sends oldest→newest, reverse so newest is at top
+            historyBuffer
+                .sort((a, b) => b.timestamp - a.timestamp)
+                .forEach(data => addEvent(data, false))
+            historyBuffer.length = 0
+        }, 500)
+    }
+
+    eventSource.onerror = () => {
+        connected.value = false
+        disconnected.value = true
+        eventSource?.close()
+        eventSource = null
+    }
+}
+
+const statusClass = computed(() => {
+    if (disconnected.value) return 'status--disconnected'
+    if (connected.value) return 'status--connected'
+    return 'status--connecting'
+})
+
+const statusLabel = computed(() => {
+    if (disconnected.value) return 'Disconnected'
+    if (connected.value) return 'Live'
+    return 'Connecting...'
+})
+
+onMounted(connect)
+onUnmounted(() => eventSource?.close())
 </script>
 
 <style scoped>
 .live-feed-section {
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    /* height: 100%; */
+    gap: 16px;
+    height: 100%;
 }
 
 .section-header {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
     gap: 12px;
+    flex-shrink: 0;
 }
 
 .section-title {
     font-family: var(--font-heading);
-    font-size: 24px;
+    font-size: 29px;
     font-weight: 700;
     color: var(--soul-gold);
     letter-spacing: 2px;
@@ -111,39 +291,52 @@ onUnmounted(() => clearInterval(timer))
     opacity: 0.8;
 }
 
-.section-subtitle {
-    font-size: 14px;
-    color: var(--ash);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-top: 4px;
-    font-style: italic;
-}
-
-.feed-controls {
+/* Status indicator */
+.feed-status {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
+    flex-shrink: 0;
 }
 
-.control-btn {
-    background: rgba(139, 0, 0, 0.2);
-    border: 1px solid rgba(139, 0, 0, 0.5);
-    color: var(--ash);
+.status-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.status--connected {
+    background: #22c55e;
+    box-shadow: 0 0 8px #22c55e;
+    animation: hellPulse 2s ease-in-out infinite;
+}
+
+.status--connecting {
+    background: var(--brimstone);
+    box-shadow: 0 0 8px var(--brimstone);
+    animation: hellPulse 1s ease-in-out infinite;
+}
+
+.status--disconnected {
+    background: #555;
+    box-shadow: none;
+}
+
+.status-label {
     font-family: var(--font-subhead);
-    font-size: 14px;
-    letter-spacing: 1px;
-    padding: 6px 16px;
-    border-radius: 3px;
-    cursor: pointer;
-    transition: all 0.2s;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--ash);
 }
 
-.control-btn:hover,
-.control-btn.active {
-    background: rgba(139, 0, 0, 0.4);
-    border-color: var(--blood-red);
-    color: var(--ember);
+.status--connected+.status-label {
+    color: #22c55e;
+}
+
+.status--connecting+.status-label {
+    color: var(--brimstone);
 }
 
 .event-count {
@@ -152,10 +345,12 @@ onUnmounted(() => clearInterval(timer))
     letter-spacing: 1px;
 }
 
+/* Feed container */
 .feed-container {
     flex: 1;
     overflow: hidden;
     position: relative;
+    min-height: 200px;
 }
 
 .feed-inner {
@@ -172,56 +367,64 @@ onUnmounted(() => clearInterval(timer))
     gap: 2px;
 }
 
+/* Event row */
 .event-row {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 7px 10px;
+    padding: 8px 10px;
     border-radius: 3px;
     border-left: 3px solid transparent;
     white-space: nowrap;
-    overflow: hidden;
+    overflow: visible;
+    /* was: hidden */
     transition: background 0.15s;
+    position: relative;
+    /* add this */
 }
 
 .event-row:hover {
     background: rgba(139, 0, 0, 0.08);
 }
 
+/* Failed events are dimmed */
+.event--fail {
+    opacity: 0.45;
+}
+
 .event-type--drop {
     border-left-color: var(--sulfur);
-}
-
-.event-type--gp {
-    border-left-color: var(--soul-gold);
-}
-
-.event-type--kill {
-    border-left-color: var(--crimson);
+    color: var(--sulfur);
 }
 
 .event-type--level {
-    border-left-color: var(--ember);
+    border-left-color: #38bdf8;
+    color: #38bdf8;
 }
 
 .event-type--pet {
     border-left-color: #a855f7;
+    color: #a855f7;
 }
 
 .event-type--death {
-    border-left-color: #555;
+    border-left-color: #888;
+    color: #888;
 }
 
 .event-type--clog {
-    border-left-color: #3b82f6;
+    border-left-color: #2ff32f;
+    color: #2ff32f;
 }
 
 .event-type--combat {
-    border-left-color: var(--brimstone);
+    border-left-color: #ffa500;
+    color: #ffa500;
 }
 
 .event-type--clue {
-    border-left-color: #22c55e;
+    border-left-color: #d8db1a;
+    color: #d8db1a;
 }
 
 .event-time {
@@ -229,31 +432,61 @@ onUnmounted(() => clearInterval(timer))
     color: var(--ash);
     font-style: italic;
     flex-shrink: 0;
-    min-width: 58px;
+    min-width: 72px;
 }
 
 .event-player {
     font-family: var(--font-subhead);
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 600;
     color: var(--ember);
     flex-shrink: 0;
 }
 
 .event-message {
-    font-size: 14px;
-    color: var(--parchment);
+    font-size: 15px;
+    color: inherit;
     overflow: hidden;
     text-overflow: ellipsis;
     flex: 1;
 }
 
-.event-value {
+/* Empty / disconnected state */
+.feed-empty {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 40px;
+}
+
+.empty-icon {
+    font-size: 36px;
+    color: var(--blood-red);
+    opacity: 0.4;
+    animation: hellPulse 3s ease-in-out infinite;
+}
+
+.empty-text {
     font-family: var(--font-subhead);
-    font-size: 13px;
-    color: var(--soul-gold);
-    flex-shrink: 0;
-    margin-left: auto;
+    font-size: 14px;
+    color: var(--ash);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: center;
+    font-style: italic;
+}
+
+.feed-fade {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    background: linear-gradient(to top, rgba(17, 3, 8, 0.95) 0%, transparent 100%);
+    pointer-events: none;
 }
 
 .feed-event-enter-active {
@@ -266,5 +499,66 @@ onUnmounted(() => clearInterval(timer))
 
 .feed-event-leave-to {
     opacity: 0;
+}
+
+/* Loot source with hover tooltip */
+.loot-source {
+    position: relative;
+    cursor: help;
+    color: var(--soul-gold);
+    border-bottom: 1px dashed rgba(255, 179, 71, 0.4);
+    text-decoration: none;
+}
+
+.loot-source:hover {
+    color: var(--sulfur);
+    border-bottom-color: var(--sulfur);
+}
+
+.loot-tooltip {
+    position: fixed;
+    z-index: 9999;
+    pointer-events: none;
+    background: linear-gradient(160deg, rgba(25, 3, 3, 0.98) 0%, rgba(12, 1, 1, 0.98) 100%);
+    border: 1px solid var(--blood-red);
+    border-top: 1px solid rgba(255, 107, 53, 0.4);
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+    font-family: var(--font-subhead);
+    font-size: 13px;
+    color: var(--soul-gold);
+    white-space: normal;
+    min-width: 180px;
+    max-width: 300px;
+    box-shadow:
+        0 0 0 1px rgba(255, 60, 0, 0.08) inset,
+        0 0 24px rgba(139, 0, 0, 0.6),
+        0 8px 32px rgba(0, 0, 0, 0.9);
+    line-height: 1.8;
+    letter-spacing: 0.5px;
+}
+
+.loot-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 7px solid transparent;
+    border-top-color: var(--blood-red);
+}
+
+.loot-source:hover .loot-tooltip {
+    display: block;
+}
+
+.clue-source {
+    color: #d8db1a;
+    border-bottom: 1px dashed rgba(34, 197, 94, 0.4);
+}
+
+.clue-source:hover {
+    color: #d8db1a;
+    border-bottom-color: #d8db1a;
 }
 </style>

@@ -54,13 +54,11 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { CLAN_PLAYERS } from '@/data/mockData.js'
+import { computed } from 'vue'
+import { players } from '@/stores/statsStore.js'
 
-const players = ref(CLAN_PLAYERS.map(p => ({ ...p })))
-
-function clanSum(key) { return players.value.reduce((s, p) => s + p[key], 0) }
-function topPlayer(key) { return [...players.value].sort((a, b) => b[key] - a[key])[0]?.name }
+function clanSum(key) { return players.value.reduce((s, p) => s + (p[key] || 0), 0) }
+function topPlayer(key) { return [...players.value].sort((a, b) => (b[key] || 0) - (a[key] || 0))[0]?.name }
 function pct(current, goal) { return Math.min(Math.floor((current / goal) * 100), 100) }
 function fmtGP(v) {
     if (v >= 1_000_000_000) return `${(v / 1_000_000_000).toFixed(1)}B`
@@ -90,27 +88,7 @@ function badgeClass(p) {
     return 'badge--low'
 }
 
-const TICK_KEYS = ['gpEarned', 'itemsReceived', 'levelsEarned', 'petsEarned', 'clogsEarned', 'combatTasks', 'clueScrolls']
-const TICK_AMOUNTS = {
-    gpEarned: () => Math.floor(Math.random() * 300_000) + 50_000,
-    itemsReceived: () => 1,
-    levelsEarned: () => 1,
-    petsEarned: () => Math.random() < 0.04 ? 1 : 0,
-    clogsEarned: () => Math.random() < 0.15 ? 1 : 0,
-    combatTasks: () => Math.random() < 0.12 ? 1 : 0,
-    clueScrolls: () => Math.random() < 0.08 ? 1 : 0,
-}
 
-let timer = null
-onMounted(() => {
-    timer = setInterval(() => {
-        const idx = Math.floor(Math.random() * players.value.length)
-        const key = TICK_KEYS[Math.floor(Math.random() * TICK_KEYS.length)]
-        const delta = TICK_AMOUNTS[key]()
-        if (delta > 0) players.value[idx][key] += delta
-    }, 4000)
-})
-onUnmounted(() => clearInterval(timer))
 </script>
 
 <style scoped>
@@ -128,7 +106,7 @@ onUnmounted(() => clearInterval(timer))
 
 .section-title {
     font-family: var(--font-heading);
-    font-size: 24px;
+    font-size: 29px;
     font-weight: 700;
     color: var(--soul-gold);
     letter-spacing: 2px;
@@ -136,7 +114,7 @@ onUnmounted(() => clearInterval(timer))
 }
 
 .section-subtitle {
-    font-size: 14px;
+    font-size: 21px;
     color: var(--ash);
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -157,7 +135,7 @@ onUnmounted(() => clearInterval(timer))
 }
 
 .overall-label {
-    font-size: 12px;
+    font-size: 18px;
     color: var(--ash);
     letter-spacing: 1.5px;
     text-transform: uppercase;
@@ -165,7 +143,7 @@ onUnmounted(() => clearInterval(timer))
 
 .overall-pct {
     font-family: var(--font-subhead);
-    font-size: 26px;
+    font-size: 30px;
     font-weight: 700;
     color: var(--ember);
     line-height: 1;
@@ -198,13 +176,13 @@ onUnmounted(() => clearInterval(timer))
 
 .completed-num {
     font-family: var(--font-subhead);
-    font-size: 22px;
+    font-size: 30px;
     font-weight: 700;
     color: var(--sulfur);
 }
 
 .completed-label {
-    font-size: 14px;
+    font-size: 21px;
     color: var(--ash);
 }
 
@@ -253,7 +231,7 @@ onUnmounted(() => clearInterval(timer))
 
 .ms-title {
     font-family: var(--font-subhead);
-    font-size: 15px;
+    font-size: 18px;
     font-weight: 600;
     color: var(--bone);
     letter-spacing: 0.5px;
@@ -264,14 +242,14 @@ onUnmounted(() => clearInterval(timer))
 }
 
 .ms-detail {
-    font-size: 13px;
+    font-size: 19px;
     color: var(--ash);
     font-style: italic;
 }
 
 .ms-badge {
     font-family: var(--font-subhead);
-    font-size: 12px;
+    font-size: 18px;
     font-weight: 700;
     letter-spacing: 1px;
     padding: 4px 10px;
@@ -341,7 +319,7 @@ onUnmounted(() => clearInterval(timer))
 }
 
 .ms-remaining {
-    font-size: 13px;
+    font-size: 19px;
     color: var(--ash);
     font-style: italic;
 }
@@ -351,7 +329,7 @@ onUnmounted(() => clearInterval(timer))
 }
 
 .ms-leader {
-    font-size: 13px;
+    font-size: 19px;
     color: var(--ash);
     font-family: var(--font-subhead);
 }

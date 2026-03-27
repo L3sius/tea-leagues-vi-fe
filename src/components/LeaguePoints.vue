@@ -68,7 +68,7 @@ const sortedPlayers = computed(() =>
 
 async function fetchPlayer(playerRef) {
     try {
-        const res = await fetch(`/api/hiscores?player=${encodeURIComponent(playerRef.name)}`)
+        // const res = await fetch(`/api/hiscores?player=${encodeURIComponent(playerRef.name)}`)
         if (!res.ok) throw new Error(`HTTP ${res.status}`)
         const text = await res.text()
         const lines = text.trim().split('\n')
@@ -107,7 +107,7 @@ onMounted(() => { players.value.forEach(p => fetchPlayer(p)) })
 
 .section-title {
     font-family: var(--font-heading);
-    font-size: 24px;
+    font-size: 29px;
     font-weight: 700;
     color: var(--soul-gold);
     letter-spacing: 2px;
@@ -115,7 +115,7 @@ onMounted(() => { players.value.forEach(p => fetchPlayer(p)) })
 }
 
 .section-subtitle {
-    font-size: 14px;
+    font-size: 21px;
     color: var(--ash);
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -158,7 +158,7 @@ onMounted(() => { players.value.forEach(p => fetchPlayer(p)) })
     padding: 9px 16px 8px;
     border-bottom: 1px solid rgba(139, 0, 0, 0.3);
     font-family: var(--font-subhead);
-    font-size: 11px;
+    font-size: 21px;
     letter-spacing: 1.5px;
     text-transform: uppercase;
     color: var(--ash);
@@ -183,7 +183,7 @@ onMounted(() => { players.value.forEach(p => fetchPlayer(p)) })
 
 .lp-pos {
     font-family: var(--font-subhead);
-    font-size: 14px;
+    font-size: 21px;
     color: var(--ash);
 }
 
@@ -201,7 +201,7 @@ onMounted(() => { players.value.forEach(p => fetchPlayer(p)) })
 
 .lp-name {
     font-family: var(--font-subhead);
-    font-size: 15px;
+    font-size: 18px;
     color: var(--bone);
     white-space: nowrap;
     overflow: hidden;
@@ -222,13 +222,13 @@ onMounted(() => { players.value.forEach(p => fetchPlayer(p)) })
 
 .lp-lp-rank {
     font-family: var(--font-subhead);
-    font-size: 14px;
+    font-size: 21px;
     color: var(--ash);
 }
 
 .lp-points {
     font-family: var(--font-subhead);
-    font-size: 16px;
+    font-size: 19px;
     font-weight: 700;
     color: var(--soul-gold);
     text-shadow: 0 0 6px rgba(255, 179, 71, 0.3);
@@ -251,13 +251,13 @@ onMounted(() => { players.value.forEach(p => fetchPlayer(p)) })
 
 .error-text {
     color: var(--ash);
-    font-size: 13px;
+    font-size: 19px;
     cursor: help;
 }
 
 .cors-notice {
     padding: 10px 16px 12px;
-    font-size: 13px;
+    font-size: 19px;
     color: var(--ash);
     font-style: italic;
     border-top: 1px dashed rgba(139, 0, 0, 0.25);
