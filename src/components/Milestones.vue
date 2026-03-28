@@ -36,7 +36,7 @@
 
                 <div class="ms-bar-track">
                     <div class="ms-bar-fill" :class="{ 'fill-complete': ms.pct >= 100 }"
-                        :style="{ width: Math.min(ms.pct, 100) + '%' }"></div>
+                        :style="{ width: ms.barWidth + '%' }"></div>
                     <div class="ms-tick" style="left: 25%"></div>
                     <div class="ms-tick" style="left: 50%"></div>
                     <div class="ms-tick" style="left: 75%"></div>
@@ -46,7 +46,7 @@
                     <span class="ms-remaining" v-if="ms.pct < 100">{{ ms.formatGoal(ms.goal - ms.current) }}
                         remaining</span>
                     <span class="ms-remaining complete-text" v-else>Milestone achieved!</span>
-                    <span class="ms-leader" v-if="ms.leader">{{ ms.leader }}</span>
+                    <span class="ms-leader" v-if="ms.leader">#1 {{ ms.leader }}</span>
                 </div>
             </div>
         </div>
@@ -60,6 +60,7 @@ import { players } from '@/stores/statsStore.js'
 function clanSum(key) { return players.value.reduce((s, p) => s + (p[key] || 0), 0) }
 function topPlayer(key) { return [...players.value].sort((a, b) => (b[key] || 0) - (a[key] || 0))[0]?.name }
 function pct(current, goal) { return Math.min(Math.floor((current / goal) * 100), 100) }
+function barWidth(current, goal) { return Math.min((current / goal) * 100, 100) }
 function fmtGP(v) {
     if (v >= 1_000_000_000) return `${(v / 1_000_000_000).toFixed(1)}B`
     if (v >= 1_000_000) return `${(v / 1_000_000).toFixed(1)}M`
@@ -68,14 +69,26 @@ function fmtGP(v) {
 }
 function fmtNum(v) { return v.toLocaleString() }
 
+// ── Change goals here ────────────────────────────────────────────────────────
+const GOALS = {
+    gpEarned: 50_000_0,
+    itemsReceived: 10_000_000,
+    levelsEarned: 10_000,
+    petsEarned: 10,
+    clogsEarned: 10_000,
+    combatTasks: 1_000,
+    clueScrolls: 14,
+}
+// ────────────────────────────────────────────────────────────────────────────
+
 const milestones = computed(() => [
-    { key: 'gpEarned', label: '10 Billion GP Earned', goal: 10_000_000_000, current: clanSum('gpEarned'), formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('gpEarned'), 10_000_000_000), leader: topPlayer('gpEarned') },
-    { key: 'itemsReceived', label: '10M Items Received', goal: 10_000_000, current: clanSum('itemsReceived'), formatCurrent: fmtNum, formatGoal: fmtNum, pct: pct(clanSum('itemsReceived'), 10_000_000), leader: topPlayer('itemsReceived') },
-    { key: 'levelsEarned', label: '10,000 Levels Earned', goal: 10_000, current: clanSum('levelsEarned'), formatCurrent: fmtNum, formatGoal: fmtNum, pct: pct(clanSum('levelsEarned'), 10_000), leader: topPlayer('levelsEarned') },
-    { key: 'petsEarned', label: '10 Pets Received', goal: 10, current: clanSum('petsEarned'), formatCurrent: fmtNum, formatGoal: fmtNum, pct: pct(clanSum('petsEarned'), 10), leader: topPlayer('petsEarned') },
-    { key: 'clogsEarned', label: '10,000 Clog Slots', goal: 10_000, current: clanSum('clogsEarned'), formatCurrent: fmtNum, formatGoal: fmtNum, pct: pct(clanSum('clogsEarned'), 10_000), leader: topPlayer('clogsEarned') },
-    { key: 'combatTasks', label: '1,000 Combat Tasks', goal: 1_000, current: clanSum('combatTasks'), formatCurrent: fmtNum, formatGoal: fmtNum, pct: pct(clanSum('combatTasks'), 1_000), leader: topPlayer('combatTasks') },
-    { key: 'clueScrolls', label: '10,000 Clue Scrolls', goal: 10_000, current: clanSum('clueScrolls'), formatCurrent: fmtNum, formatGoal: fmtNum, pct: pct(clanSum('clueScrolls'), 10_000), leader: topPlayer('clueScrolls') },
+    { key: 'gpEarned', label: `${fmtGP(GOALS.gpEarned)} GP Earned`, goal: GOALS.gpEarned, current: clanSum('gpEarned'), formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('gpEarned'), GOALS.gpEarned), barWidth: barWidth(clanSum('gpEarned'), GOALS.gpEarned), leader: topPlayer('gpEarned') },
+    { key: 'itemsReceived', label: `${fmtNum(GOALS.itemsReceived)} Items Received`, goal: GOALS.itemsReceived, current: clanSum('itemsReceived'), formatCurrent: fmtNum, formatGoal: fmtNum, pct: pct(clanSum('itemsReceived'), GOALS.itemsReceived), barWidth: barWidth(clanSum('itemsReceived'), GOALS.itemsReceived), leader: topPlayer('itemsReceived') },
+    { key: 'levelsEarned', label: `${fmtNum(GOALS.levelsEarned)} Levels Earned`, goal: GOALS.levelsEarned, current: clanSum('levelsEarned'), formatCurrent: fmtNum, formatGoal: fmtNum, pct: pct(clanSum('levelsEarned'), GOALS.levelsEarned), barWidth: barWidth(clanSum('levelsEarned'), GOALS.levelsEarned), leader: topPlayer('levelsEarned') },
+    { key: 'petsEarned', label: `${fmtNum(GOALS.petsEarned)} Pets Received`, goal: GOALS.petsEarned, current: clanSum('petsEarned'), formatCurrent: fmtNum, formatGoal: fmtNum, pct: pct(clanSum('petsEarned'), GOALS.petsEarned), barWidth: barWidth(clanSum('petsEarned'), GOALS.petsEarned), leader: topPlayer('petsEarned') },
+    { key: 'clogsEarned', label: `${fmtNum(GOALS.clogsEarned)} Clog Slots`, goal: GOALS.clogsEarned, current: clanSum('clogsEarned'), formatCurrent: fmtNum, formatGoal: fmtNum, pct: pct(clanSum('clogsEarned'), GOALS.clogsEarned), barWidth: barWidth(clanSum('clogsEarned'), GOALS.clogsEarned), leader: topPlayer('clogsEarned') },
+    { key: 'combatTasks', label: `${fmtNum(GOALS.combatTasks)} Combat Tasks`, goal: GOALS.combatTasks, current: clanSum('combatTasks'), formatCurrent: fmtNum, formatGoal: fmtNum, pct: pct(clanSum('combatTasks'), GOALS.combatTasks), barWidth: barWidth(clanSum('combatTasks'), GOALS.combatTasks), leader: topPlayer('combatTasks') },
+    { key: 'clueScrolls', label: `${fmtNum(GOALS.clueScrolls)} Clue Scrolls`, goal: GOALS.clueScrolls, current: clanSum('clueScrolls'), formatCurrent: fmtNum, formatGoal: fmtNum, pct: pct(clanSum('clueScrolls'), GOALS.clueScrolls), barWidth: barWidth(clanSum('clueScrolls'), GOALS.clueScrolls), leader: topPlayer('clueScrolls') },
 ])
 
 const completedCount = computed(() => milestones.value.filter(m => m.pct >= 100).length)
@@ -161,8 +174,9 @@ function badgeClass(p) {
 
 .overall-bar-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--blood-red), var(--ember), var(--sulfur));
+    background: linear-gradient(90deg, #ff4500, #ffd700);
     border-radius: 4px;
+    box-shadow: 0 0 10px rgba(255, 140, 0, 0.8), 0 0 20px rgba(255, 69, 0, 0.5);
     transition: width 1.2s ease;
     box-shadow: 0 0 6px rgba(255, 107, 53, 0.4);
 }
@@ -195,10 +209,6 @@ function badgeClass(p) {
 .milestone-card {
     padding: 13px 16px 11px;
     position: relative;
-    transition: box-shadow 0.2s;
-}
-
-.milestone-card:hover {
     box-shadow: 0 0 0 1px rgba(139, 0, 0, 0.45) inset, 0 0 22px rgba(160, 8, 8, 0.2), 0 4px 24px rgba(0, 0, 0, 0.6);
 }
 
@@ -231,8 +241,8 @@ function badgeClass(p) {
 
 .ms-title {
     font-family: var(--font-subhead);
-    font-size: 18px;
-    font-weight: 600;
+    font-size: 21px;
+    font-weight: 700;
     color: var(--bone);
     letter-spacing: 0.5px;
 }
@@ -245,6 +255,7 @@ function badgeClass(p) {
     font-size: 19px;
     color: var(--ash);
     font-style: italic;
+    text-align: left;
 }
 
 .ms-badge {
@@ -293,23 +304,25 @@ function badgeClass(p) {
 
 .ms-bar-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--blood-red), var(--crimson));
+    background: linear-gradient(90deg, #ff4500, #ffd700);
     border-radius: 3px;
+    box-shadow: 0 0 10px rgba(255, 140, 0, 0.8), 0 0 20px rgba(255, 69, 0, 0.5);
     transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .ms-bar-fill.fill-complete {
-    background: linear-gradient(90deg, var(--ember), var(--sulfur));
-    box-shadow: 0 0 8px rgba(255, 215, 0, 0.35);
+    background: linear-gradient(90deg, #ff4500, #ffd700);
+    box-shadow: 0 0 10px rgba(255, 140, 0, 0.8), 0 0 20px rgba(255, 69, 0, 0.5);
 }
 
 .ms-tick {
     position: absolute;
-    top: -1px;
-    width: 1px;
-    height: 9px;
-    background: rgba(139, 0, 0, 0.3);
+    top: -2px;
+    width: 2px;
+    height: 11px;
+    background: rgba(139, 0, 0, 0.6);
     transform: translateX(-50%);
+    z-index: 1;
 }
 
 .ms-footer {
@@ -319,7 +332,7 @@ function badgeClass(p) {
 }
 
 .ms-remaining {
-    font-size: 19px;
+    font-size: 17px;
     color: var(--ash);
     font-style: italic;
 }
@@ -329,7 +342,7 @@ function badgeClass(p) {
 }
 
 .ms-leader {
-    font-size: 19px;
+    font-size: 17px;
     color: var(--ash);
     font-family: var(--font-subhead);
 }

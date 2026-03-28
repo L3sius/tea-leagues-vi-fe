@@ -2,7 +2,6 @@
     <section class="stat-trackers">
         <div class="section-header">
             <h2 class="section-title">Clan Stats</h2>
-            <p class="section-subtitle">Live · Click to expand</p>
         </div>
 
         <div class="trackers-list">
@@ -20,7 +19,7 @@
                         <span class="card-leader">
                             #1 {{ topPlayer(tracker.key)?.name }}
                             <span class="leader-val">{{ tracker.format(topPlayer(tracker.key)?.[tracker.key] ?? 0)
-                                }}</span>
+                            }}</span>
                         </span>
                         <button class="expand-btn" :aria-label="expanded[tracker.key] ? 'Collapse' : 'Expand'">
                             <span class="expand-chevron" :class="{ 'is-open': expanded[tracker.key] }">▾</span>
@@ -202,8 +201,8 @@ function barWidth(val, key) {
 }
 
 .expand-btn {
-    background: none;
-    border: 1px solid rgba(139, 0, 0, 0.35);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 3px;
     width: 26px;
     height: 26px;
@@ -216,8 +215,8 @@ function barWidth(val, key) {
 }
 
 .expand-btn:hover {
-    background: rgba(139, 0, 0, 0.2);
-    border-color: var(--blood-red);
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.4);
 }
 
 .expand-chevron {
