@@ -32,8 +32,6 @@
 
       <template v-if="activePanel === 'stats'">
         <StatTrackers />
-        <div class="col-spacer"></div>
-        <LeaguePoints />
       </template>
 
       <template v-else-if="activePanel === 'milestones'">
@@ -53,7 +51,6 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import LiveFeed from '@/components/LiveFeed.vue'
 import StatTrackers from '@/components/StatTrackers.vue'
 import Milestones from '@/components/Milestones.vue'
-import LeaguePoints from '@/components/LeaguePoints.vue'
 import LeagueInfoPanel from '@/components/LeagueInfoPanel.vue'
 import { initStats, closeStats } from '@/stores/statsStore.js'
 

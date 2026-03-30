@@ -19,7 +19,7 @@
                         <span class="card-leader">
                             #1 {{ topPlayer(tracker.key)?.name }}
                             <span class="leader-val">{{ tracker.format(topPlayer(tracker.key)?.[tracker.key] ?? 0)
-                            }}</span>
+                                }}</span>
                         </span>
                         <button class="expand-btn" :aria-label="expanded[tracker.key] ? 'Collapse' : 'Expand'">
                             <span class="expand-chevron" :class="{ 'is-open': expanded[tracker.key] }">▾</span>
@@ -29,13 +29,17 @@
 
                 <Transition name="expand">
                     <div v-if="expanded[tracker.key]" class="leaderboard">
-                        <div v-for="(player, idx) in sorted(tracker.key)" :key="player.id" class="lb-row"
-                            :class="{ 'lb-row--gold': idx === 0, 'lb-row--silver': idx === 1, 'lb-row--bronze': idx === 2 }">
+                        <div v-for="(player, idx) in sorted(tracker.key)" :key="player.name" class="lb-row"
+                            :class="tracker.key === 'leaguePoints' ? getRank(player.leaguePoints)?.cls : ''">
                             <span class="lb-pos">{{ idx + 1 }}</span>
                             <span class="lb-name">{{ player.name }}</span>
+                            <span v-if="tracker.key === 'leaguePoints'" class="lb-rank-badge"
+                                :class="getRank(player.leaguePoints)?.cls ?? 'lb-rank-badge--none'">
+                                {{ getRank(player.leaguePoints)?.name ?? '—' }}
+                            </span>
                             <div class="lb-bar-wrap">
                                 <div class="lb-bar"
-                                    :class="{ 'lb-bar--gold': idx === 0, 'lb-bar--bad': tracker.key === 'deaths' }"
+                                    :class="{ 'lb-bar--bad': tracker.key === 'deaths' }"
                                     :style="{ width: barWidth(player[tracker.key], tracker.key) + '%' }"></div>
                             </div>
                             <span class="lb-val" :class="{ 'lb-val--bad': tracker.key === 'deaths' }">
@@ -54,6 +58,18 @@
 import { reactive } from 'vue'
 import { players } from '@/stores/statsStore.js'
 
+const RANK_TIERS = [
+    { min: 60000, name: 'Dragon',  cls: 'rank-dragon'  },
+    { min: 45000, name: 'Rune',    cls: 'rank-rune'    },
+    { min: 30000, name: 'Adamant', cls: 'rank-adamant' },
+    { min: 20000, name: 'Mithril', cls: 'rank-mithril' },
+    { min: 10000, name: 'Steel',   cls: 'rank-steel'   },
+    { min:  4000, name: 'Iron',    cls: 'rank-iron'    },
+    { min:  2000, name: 'Bronze',  cls: 'rank-bronze'  },
+]
+
+function getRank(points) { return RANK_TIERS.find(t => points >= t.min) ?? null }
+
 const expanded = reactive({})
 function toggle(key) { expanded[key] = !expanded[key] }
 
@@ -66,6 +82,9 @@ const trackers = [
     { key: 'clogsEarned', label: 'Clog Slots', format: v => v.toLocaleString() },
     { key: 'combatTasks', label: 'Combat Tasks', format: v => v.toLocaleString() },
     { key: 'clueScrolls', label: 'Clue Scrolls', format: v => v.toLocaleString() },
+    { key: 'killCount', label: 'Kill Count', format: v => v.toLocaleString() },
+    { key: 'leagueTasks', label: 'League Tasks', format: v => v.toLocaleString() },
+    { key: 'leaguePoints', label: 'League Points', format: v => v.toLocaleString() },
 ]
 
 function sorted(key) { return [...players.value].sort((a, b) => b[key] - a[key]) }
@@ -250,21 +269,6 @@ function barWidth(val, key) {
     padding: 5px 0;
 }
 
-.lb-row--gold .lb-name {
-    color: var(--soul-gold);
-}
-
-.lb-row--silver .lb-name {
-    color: var(--parchment);
-}
-
-.lb-row--bronze .lb-name {
-    color: #8b7355;
-}
-
-.lb-row--rest .lb-name {
-    color: var(--ash);
-}
 
 .lb-pos {
     font-family: var(--font-subhead);
@@ -275,17 +279,6 @@ function barWidth(val, key) {
     flex-shrink: 0;
 }
 
-.lb-row--gold .lb-pos {
-    color: var(--sulfur);
-}
-
-.lb-row--silver .lb-pos {
-    color: var(--parchment);
-}
-
-.lb-row--bronze .lb-pos {
-    color: var(--ember);
-}
 
 .lb-name {
     font-family: var(--font-subhead);
@@ -312,10 +305,6 @@ function barWidth(val, key) {
     transition: width 0.9s ease;
 }
 
-.lb-bar--gold {
-    background: linear-gradient(90deg, var(--ember), var(--sulfur));
-    box-shadow: 0 0 4px rgba(255, 215, 0, 0.25);
-}
 
 .lb-bar--bad {
     background: linear-gradient(90deg, #5a0000, var(--crimson));
@@ -343,6 +332,50 @@ function barWidth(val, key) {
     color: var(--ash);
     font-weight: 400;
 }
+
+/* ── League Points rank badges ── */
+.lb-rank-badge {
+    font-family: var(--font-subhead);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid currentColor;
+    flex-shrink: 0;
+    opacity: 0.9;
+}
+
+.lb-rank-badge--none {
+    color: var(--ash);
+    border-color: transparent;
+    opacity: 0.3;
+}
+
+.rank-dragon  { --rank-color: #e03030; }
+.rank-rune    { --rank-color: #00cece; }
+.rank-adamant { --rank-color: #4caf50; }
+.rank-mithril { --rank-color: #8080e0; }
+.rank-steel   { --rank-color: #a8b8c8; }
+.rank-iron    { --rank-color: #909090; }
+.rank-bronze  { --rank-color: #cd7f32; }
+
+.lb-row.rank-dragon  .lb-name, .lb-row.rank-dragon  .lb-val { color: #e03030; }
+.lb-row.rank-rune    .lb-name, .lb-row.rank-rune    .lb-val { color: #00cece; }
+.lb-row.rank-adamant .lb-name, .lb-row.rank-adamant .lb-val { color: #4caf50; }
+.lb-row.rank-mithril .lb-name, .lb-row.rank-mithril .lb-val { color: #8080e0; }
+.lb-row.rank-steel   .lb-name, .lb-row.rank-steel   .lb-val { color: #a8b8c8; }
+.lb-row.rank-iron    .lb-name, .lb-row.rank-iron    .lb-val { color: #909090; }
+.lb-row.rank-bronze  .lb-name, .lb-row.rank-bronze  .lb-val { color: #cd7f32; }
+
+.lb-rank-badge.rank-dragon  { color: #e03030; }
+.lb-rank-badge.rank-rune    { color: #00cece; }
+.lb-rank-badge.rank-adamant { color: #4caf50; }
+.lb-rank-badge.rank-mithril { color: #8080e0; }
+.lb-rank-badge.rank-steel   { color: #a8b8c8; }
+.lb-rank-badge.rank-iron    { color: #909090; }
+.lb-rank-badge.rank-bronze  { color: #cd7f32; }
 
 .expand-divider {
     padding: 6px 0 4px;

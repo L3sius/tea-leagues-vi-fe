@@ -71,13 +71,16 @@ function fmtNum(v) { return v.toLocaleString() }
 
 // ── Change goals here ────────────────────────────────────────────────────────
 const GOALS = {
-    gpEarned: 50_000_0,
+    gpEarned:      50_000_0,
     itemsReceived: 10_000_000,
-    levelsEarned: 10_000,
-    petsEarned: 10,
-    clogsEarned: 10_000,
-    combatTasks: 1_000,
-    clueScrolls: 14,
+    levelsEarned:  10_000,
+    petsEarned:    10,
+    clogsEarned:   10_000,
+    combatTasks:   1_000,
+    clueScrolls:   14,
+    killCount:     10_000,
+    leagueTasks:   10_000,
+    leaguePoints:  500_000,
 }
 // ────────────────────────────────────────────────────────────────────────────
 
@@ -88,7 +91,10 @@ const milestones = computed(() => [
     { key: 'petsEarned', label: `${fmtNum(GOALS.petsEarned)} Pets Received`, goal: GOALS.petsEarned, current: clanSum('petsEarned'), formatCurrent: fmtNum, formatGoal: fmtNum, pct: pct(clanSum('petsEarned'), GOALS.petsEarned), barWidth: barWidth(clanSum('petsEarned'), GOALS.petsEarned), leader: topPlayer('petsEarned') },
     { key: 'clogsEarned', label: `${fmtNum(GOALS.clogsEarned)} Clog Slots`, goal: GOALS.clogsEarned, current: clanSum('clogsEarned'), formatCurrent: fmtNum, formatGoal: fmtNum, pct: pct(clanSum('clogsEarned'), GOALS.clogsEarned), barWidth: barWidth(clanSum('clogsEarned'), GOALS.clogsEarned), leader: topPlayer('clogsEarned') },
     { key: 'combatTasks', label: `${fmtNum(GOALS.combatTasks)} Combat Tasks`, goal: GOALS.combatTasks, current: clanSum('combatTasks'), formatCurrent: fmtNum, formatGoal: fmtNum, pct: pct(clanSum('combatTasks'), GOALS.combatTasks), barWidth: barWidth(clanSum('combatTasks'), GOALS.combatTasks), leader: topPlayer('combatTasks') },
-    { key: 'clueScrolls', label: `${fmtNum(GOALS.clueScrolls)} Clue Scrolls`, goal: GOALS.clueScrolls, current: clanSum('clueScrolls'), formatCurrent: fmtNum, formatGoal: fmtNum, pct: pct(clanSum('clueScrolls'), GOALS.clueScrolls), barWidth: barWidth(clanSum('clueScrolls'), GOALS.clueScrolls), leader: topPlayer('clueScrolls') },
+    { key: 'clueScrolls',  label: `${fmtNum(GOALS.clueScrolls)} Clue Scrolls`,   goal: GOALS.clueScrolls,  current: clanSum('clueScrolls'),  formatCurrent: fmtNum, formatGoal: fmtNum, pct: pct(clanSum('clueScrolls'), GOALS.clueScrolls),    barWidth: barWidth(clanSum('clueScrolls'), GOALS.clueScrolls),    leader: topPlayer('clueScrolls') },
+    { key: 'killCount',    label: `${fmtNum(GOALS.killCount)} Bosses Killed`,    goal: GOALS.killCount,    current: clanSum('killCount'),    formatCurrent: fmtNum, formatGoal: fmtNum, pct: pct(clanSum('killCount'), GOALS.killCount),          barWidth: barWidth(clanSum('killCount'), GOALS.killCount),          leader: topPlayer('killCount') },
+    { key: 'leagueTasks',  label: `${fmtNum(GOALS.leagueTasks)} Tasks Completed`, goal: GOALS.leagueTasks,  current: clanSum('leagueTasks'),  formatCurrent: fmtNum, formatGoal: fmtNum, pct: pct(clanSum('leagueTasks'), GOALS.leagueTasks),      barWidth: barWidth(clanSum('leagueTasks'), GOALS.leagueTasks),      leader: topPlayer('leagueTasks') },
+    { key: 'leaguePoints', label: `${fmtNum(GOALS.leaguePoints)} League Points`,  goal: GOALS.leaguePoints, current: clanSum('leaguePoints'), formatCurrent: fmtNum, formatGoal: fmtNum, pct: pct(clanSum('leaguePoints'), GOALS.leaguePoints),    barWidth: barWidth(clanSum('leaguePoints'), GOALS.leaguePoints),    leader: topPlayer('leaguePoints') },
 ])
 
 const completedCount = computed(() => milestones.value.filter(m => m.pct >= 100).length)

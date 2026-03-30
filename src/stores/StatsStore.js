@@ -24,6 +24,9 @@ function applyTeamStats(teamStats) {
             existing.clueScrolls = p.totalClues
             existing.clogsEarned = p.totalClogs
             existing.petsEarned = p.totalPets
+            existing.killCount = p.totalKillCount
+            existing.leagueTasks = p.totalLeagueTasks
+            existing.leaguePoints = p.totalLeaguePoints
         } else {
             players.value.push({
                 name: p.name,
@@ -35,6 +38,9 @@ function applyTeamStats(teamStats) {
                 clogsEarned: p.totalClogs,
                 combatTasks: p.totalCombatTasks,
                 clueScrolls: p.totalClues,
+                killCount: p.totalKillCount,
+                leagueTasks: p.totalLeagueTasks,
+                leaguePoints: p.totalLeaguePoints,
             })
         }
     })
@@ -57,6 +63,9 @@ export async function initStats() {
                 clogsEarned: 0,
                 combatTasks: 0,
                 clueScrolls: 0,
+                killCount: 0,
+                leagueTasks: 0,
+                leaguePoints: 0,
                 rank: 'Member',
             }))
         }
