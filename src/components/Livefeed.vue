@@ -13,14 +13,21 @@
             </div>
         </div>
 
-        <div class="feed-container panel">
+        <div class="feed-tabs">
+            <button class="feed-tab" :class="{ 'feed-tab--active': activeTab === 'live' }"
+                @click="activeTab = 'live'">Live</button>
+            <button class="feed-tab" :class="{ 'feed-tab--active': activeTab === 'latest' }"
+                @click="activeTab = 'latest'">Latest Actions</button>
+        </div>
+
+        <!-- Live tab -->
+        <div v-if="activeTab === 'live'" class="feed-container panel">
             <div class="feed-inner" v-if="events.length > 0">
                 <TransitionGroup name="feed-event" tag="div" class="events-list">
                     <div v-for="event in events" :key="event.id" class="event-row"
                         :class="[`event-type--${event.type}`, { 'event--fail': !event.isSuccess }]">
                         <span class="event-time">{{ event.time }}</span>
                         <span class="event-player">{{ event.player }}</span>
-                        <!-- LOOT / CLUE: hoverable source with tooltip -->
                         <span v-if="event.lootSource" class="event-message loot-source"
                             :class="{ 'clue-source': event.type === 'clue' }"
                             @mouseenter="showTooltip($event, event.lootItems)" @mouseleave="hideTooltip">
@@ -30,15 +37,31 @@
                     </div>
                 </TransitionGroup>
             </div>
-
-            <!-- Empty / disconnected state -->
             <div class="feed-empty" v-else>
                 <span class="empty-icon">⸸</span>
                 <span class="empty-text" v-if="disconnected">Connection lost — awaiting reconnect</span>
                 <span class="empty-text" v-else>Awaiting events...</span>
             </div>
-
             <div class="feed-fade" v-if="events.length > 0"></div>
+        </div>
+
+        <!-- Latest Actions tab -->
+        <div v-else class="feed-container panel">
+            <div class="feed-inner">
+                <div v-if="latestList.length === 0" class="feed-empty">
+                    <span class="empty-icon">⸸</span>
+                    <span class="empty-text">Awaiting events...</span>
+                </div>
+                <div v-for="entry in latestList" :key="entry.type" class="latest-row"
+                    :class="`event-type--${entry.type}`">
+                    <span class="latest-type-label">{{ entry.typeLabel }}</span>
+                    <div class="latest-content">
+                        <span class="latest-player">{{ entry.player }}</span>
+                        <span class="latest-message">{{ entry.lootSource || entry.message }}</span>
+                        <span class="latest-time">{{ entry.time }}</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -55,8 +78,27 @@ import apiService from '@/services/apiService.js'
 const events = ref([])
 const connected = ref(false)
 const disconnected = ref(false)
+const activeTab = ref('live')
+const latest = ref({}) // { [type]: event }
 let eventSource = null
 let nextId = 1
+
+const TYPE_LABELS = {
+    drop: 'Loot',
+    death: 'Death',
+    level: 'Level Up',
+    pet: 'Pet',
+    clog: 'Collection',
+    combat: 'Combat Task',
+    clue: 'Clue Scroll',
+    kill: 'Kill Count',
+}
+
+const latestList = computed(() =>
+    Object.entries(latest.value)
+        .map(([type, event]) => ({ ...event, typeLabel: TYPE_LABELS[type] ?? type }))
+        .sort((a, b) => TYPE_LABELS[a.type]?.localeCompare(TYPE_LABELS[b.type]))
+)
 
 const tooltip = ref({ visible: false, text: '', style: {} })
 
@@ -91,6 +133,7 @@ const TYPE_MAP = {
     'COLLECTION': 'clog',
     'COMBAT_ACHIEVEMENT': 'combat',
     'CLUE': 'clue',
+    'KILL_COUNT': 'kill',
 }
 
 function parseMessage(raw, isSuccess) {
@@ -160,6 +203,15 @@ function parseMessage(raw, isSuccess) {
             lootItems = task
             message = lootSource
         }
+    } else if (rawType === 'CLOG' || rawType === 'COLLECTION') {
+        const itemMatch = raw.match(/\[([^\]]+)\]\(https?:\/\//)
+        lootSource = 'New collection log item'
+        lootItems = itemMatch ? itemMatch[1] : null
+        message = lootSource
+    } else if (rawType === 'KILL_COUNT') {
+        // Extract monster name from first markdown link: [MonsterName](url)
+        const monsterMatch = raw.match(/\[([^\]]+)\]\(https?:\/\//)
+        message = monsterMatch ? `Killed ${monsterMatch[1]}` : 'Got a kill'
     } else {
         const remaining = tokens.slice(2)
         message = remaining.length > 0
@@ -187,10 +239,14 @@ function addEvent(data, prepend = true) {
         lootSource: parsed.lootSource ?? null,
         lootItems: parsed.lootItems ?? null,
     }
+    // Always track the latest per type (only successful events)
+    if (entry.isSuccess) {
+        latest.value[entry.type] = entry
+    }
+
     if (prepend) {
         events.value.unshift(entry)
-        // Cap at 200 entries
-        if (events.value.length > 200) events.value.pop()
+        if (events.value.length > 500) events.value.pop()
     } else {
         events.value.push(entry)
     }
@@ -345,6 +401,107 @@ onUnmounted(() => eventSource?.close())
     letter-spacing: 1px;
 }
 
+/* ── Feed tabs ── */
+.feed-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.feed-tab {
+    font-family: var(--font-subhead);
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ash);
+    background: rgba(18, 2, 2, 0.75);
+    border: 1px solid rgba(139, 0, 0, 0.45);
+    border-radius: var(--radius-md);
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.feed-tab:hover {
+    color: var(--ember);
+    border-color: var(--blood-red);
+    background: rgba(139, 0, 0, 0.2);
+}
+
+.feed-tab--active {
+    color: var(--soul-gold);
+    background: rgba(139, 0, 0, 0.35);
+    border-color: var(--crimson);
+    box-shadow: 0 0 20px rgba(139, 0, 0, 0.45), inset 0 1px 0 rgba(255, 107, 53, 0.15);
+    text-shadow: 0 0 10px rgba(255, 179, 71, 0.5);
+}
+
+/* ── Latest Actions rows ── */
+.latest-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px 16px;
+    margin: 0 8px 10px;
+    border-left: 3px solid transparent;
+    border-radius: 3px;
+    background: rgba(139, 0, 0, 0.06);
+    transition: background 0.15s;
+}
+
+.latest-row:last-child {
+    margin-bottom: 0;
+}
+
+.latest-row:hover {
+    background: rgba(139, 0, 0, 0.13);
+}
+
+.latest-type-label {
+    font-family: var(--font-subhead);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: inherit;
+    line-height: 1;
+    padding-bottom: 7px;
+    border-bottom: 1px solid currentColor;
+    opacity: 0.9;
+}
+
+.latest-content {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.latest-player {
+    font-family: var(--font-subhead);
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ember);
+    flex-shrink: 0;
+}
+
+.latest-message {
+    font-size: 15px;
+    color: inherit;
+    opacity: 0.85;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.latest-time {
+    font-size: 13px;
+    color: var(--ash);
+    font-style: italic;
+    flex-shrink: 0;
+}
+
 /* Feed container */
 .feed-container {
     flex: 1;
@@ -408,8 +565,8 @@ onUnmounted(() => eventSource?.close())
 }
 
 .event-type--death {
-    border-left-color: #888;
-    color: #888;
+    border-left-color: #b42a7f;
+    color: #b42a7f;
 }
 
 .event-type--clog {
@@ -423,8 +580,13 @@ onUnmounted(() => eventSource?.close())
 }
 
 .event-type--clue {
-    border-left-color: #d8db1a;
-    color: #d8db1a;
+    border-left-color: #b1640db7;
+    color: #b1640db7;
+}
+
+.event-type--kill {
+    border-left-color: #e03030;
+    color: #e03030;
 }
 
 .event-time {
@@ -553,12 +715,12 @@ onUnmounted(() => eventSource?.close())
 }
 
 .clue-source {
-    color: #d8db1a;
+    color: #b1640db7;
     border-bottom: 1px dashed rgba(34, 197, 94, 0.4);
 }
 
 .clue-source:hover {
-    color: #d8db1a;
-    border-bottom-color: #d8db1a;
+    color: #b1640db7;
+    border-bottom-color: #b1640db7;
 }
 </style>
