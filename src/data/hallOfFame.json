@@ -1,0 +1,79 @@
+[
+  {
+    "id": 1,
+    "title": "The Sacred Stash",
+    "description": "Hoard 1,000 teas in the bank. Hydration is a lifestyle, not a choice.",
+    "completed": false,
+    "imageUrl": null
+  },
+  {
+    "id": 2,
+    "title": "The Forbidden Word",
+    "description": "Convince Harry to say \"Pregnant\" in clan chat. No context provided.",
+    "completed": true,
+    "imageUrl": "/halloffame/pregnant_h.png"
+  },
+  {
+    "id": 3,
+    "title": "Touched by the Gods",
+    "description": "Receive a Mega Rare drop and immediately screenshot it before closing the chest in shock.",
+    "completed": false,
+    "imageUrl": null
+  },
+  {
+    "id": 4,
+    "title": "Betrayal in the Raid",
+    "description": "PK a fellow TEA member mid-raid. Friendship is temporary, loot is eternal.",
+    "completed": false,
+    "imageUrl": null
+  },
+  {
+    "id": 5,
+    "title": "The Dying Art",
+    "description": "Witness a clan member dying and write 'Pain.'",
+    "completed": false,
+    "imageUrl": null
+  },
+  {
+    "id": 6,
+    "title": "Clue Enjoyer",
+    "description": "Get a 3rd age from a clue. Cry how it's not in the main game.",
+    "completed": false,
+    "imageUrl": null
+  },
+  {
+    "id": 7,
+    "title": "Patient Zero",
+    "description": "Get two nerd logs during a League. Touch grass? Never heard of it.",
+    "completed": false,
+    "imageUrl": null
+  },
+  {
+    "id": 8,
+    "title": "The Infernal Teapot",
+    "description": "Complete the Inferno with Tea as your only food.",
+    "completed": false,
+    "imageUrl": null
+  },
+  {
+    "id": 9,
+    "title": "The Sug Award",
+    "description": "Finish last in a clan skill competition and post a paragraph of excuses in Discord.",
+    "completed": false,
+    "imageUrl": null
+  },
+  {
+    "id": 10,
+    "title": "The Nerder",
+    "description": "Hit 200M XP in any skill. Nerd.",
+    "completed": false,
+    "imageUrl": null
+  },
+  {
+    "id": 11,
+    "title": "The Complex Award",
+    "description": "First to reach Dragon cup.",
+    "completed": false,
+    "imageUrl": null
+  }
+]

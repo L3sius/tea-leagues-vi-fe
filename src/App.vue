@@ -24,9 +24,13 @@
           @click="activePanel = 'milestones'">
           ⸸ Milestones
         </button>
-        <button class="toggle-btn toggle-btn--wide" :class="{ 'toggle-btn--active': activePanel === 'league' }"
+        <button class="toggle-btn" :class="{ 'toggle-btn--active': activePanel === 'league' }"
           @click="activePanel = 'league'">
           ⚿ League Info
+        </button>
+        <button class="toggle-btn" :class="{ 'toggle-btn--active': activePanel === 'halloffame' }"
+          @click="activePanel = 'halloffame'">
+          ☩ Hall of Fame
         </button>
       </div>
 
@@ -38,8 +42,12 @@
         <Milestones />
       </template>
 
-      <template v-else>
+      <template v-else-if="activePanel === 'league'">
         <LeagueInfoPanel />
+      </template>
+
+      <template v-else>
+        <HallOfFamePanel />
       </template>
 
     </aside>
@@ -52,6 +60,7 @@ import LiveFeed from '@/components/LiveFeed.vue'
 import StatTrackers from '@/components/StatTrackers.vue'
 import Milestones from '@/components/Milestones.vue'
 import LeagueInfoPanel from '@/components/LeagueInfoPanel.vue'
+import HallOfFamePanel from '@/components/HallOfFamePanel.vue'
 import { initStats, closeStats } from '@/stores/statsStore.js'
 
 const activePanel = ref('stats')
@@ -189,10 +198,6 @@ body,
   grid-template-columns: 1fr 1fr;
   gap: 10px;
   margin-bottom: 24px;
-}
-
-.toggle-btn--wide {
-  grid-column: 1 / -1;
 }
 
 .toggle-btn {

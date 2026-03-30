@@ -3,6 +3,7 @@
         <div class="section-header">
             <h2 class="section-title">League Info</h2>
             <p class="section-subtitle">Relics & Areas</p>
+            <button class="refresh-btn" :class="{ 'refresh-btn--spinning': loading }" @click="refresh" title="Refresh">↻</button>
         </div>
 
         <!-- Search -->
@@ -68,9 +69,21 @@
                 <div class="card-name">{{ player.name }}</div>
 
                 <div class="relics-grid">
-                    <div v-for="(relic, idx) in player.relics" :key="idx" class="relic-cell">
-                        <span class="relic-tier">T{{ idx + 1 }}</span>
-                        <span class="relic-name">{{ relic }}</span>
+                    <div v-for="relic in player.relics" :key="relic.tier" class="relic-cell">
+                        <span class="relic-tier">T{{ relic.tier }}</span>
+                        <span class="relic-name">{{ relic.name }}</span>
+                    </div>
+                </div>
+
+                <div v-if="player.combatMastery.length" class="combat-strip">
+                    <span class="combat-label">Combat</span>
+                    <div class="combat-badges">
+                        <span
+                            v-for="cm in player.combatMastery"
+                            :key="cm.type + cm.tier"
+                            class="combat-badge"
+                            :style="{ borderColor: COMBAT_COLORS[cm.type], color: COMBAT_COLORS[cm.type] }"
+                        >{{ cm.type }} T{{ cm.tier }}</span>
                     </div>
                 </div>
 
@@ -95,34 +108,74 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
-import { AREAS, PLAYER_RELICS } from '@/data/relicData.js'
+import { ref, computed, watch, onMounted } from 'vue'
+import apiService from '@/services/apiService.js'
 
+// ── Static area definitions (badges only — membership comes from API) ──
+const AREAS = [
+    { key: 'Asgarnia',   label: 'Asgarnia',   badge: '/badges/asgarnia.png' },
+    { key: 'Desert',     label: 'Desert',     badge: '/badges/desert.png' },
+    { key: 'Fremennik',  label: 'Fremennik',  badge: '/badges/fremennik.png' },
+    { key: 'Kandarin',   label: 'Kandarin',   badge: '/badges/kandarin.png' },
+    { key: 'Karamja',    label: 'Karamja',    badge: '/badges/karamja.png' },
+    { key: 'Kourend',    label: 'Kourend',    badge: '/badges/kourend.png' },
+    { key: 'Morytania',  label: 'Morytania',  badge: '/badges/morytania.png' },
+    { key: 'Tirannwn',   label: 'Tirannwn',   badge: '/badges/tirannwn.png' },
+    { key: 'Varlamore',  label: 'Varlamore',  badge: '/badges/varlamore.png' },
+    { key: 'Wilderness', label: 'Wilderness', badge: '/badges/wilderness.png' },
+]
+
+const COMBAT_COLORS = { Melee: '#e03030', Range: '#4caf50', Magic: '#8080e0' }
+
+// ── State ──
+const players = ref([])
+const loading = ref(false)
 const search = ref('')
 const searchFocused = ref(false)
 const selectedRegion = ref(null)
 
-// Players matching the current search query
+async function refresh() {
+    loading.value = true
+    try {
+        const data = await apiService.getLeagueStats()
+        const names = new Set([
+            ...Object.keys(data.regions ?? {}),
+            ...Object.keys(data.relics ?? {}),
+            ...Object.keys(data.combat_mastery ?? {}),
+        ])
+        players.value = [...names].map(name => ({
+            name,
+            relics: (data.relics?.[name] ?? []).slice().sort((a, b) => a.tier - b.tier),
+            areas: data.regions?.[name] ?? [],
+            combatMastery: (data.combat_mastery?.[name] ?? []).slice().sort((a, b) => a.tier - b.tier),
+        }))
+    } catch (e) {
+        console.error('Failed to load league stats:', e)
+    } finally {
+        loading.value = false
+    }
+}
+
+onMounted(refresh)
+
+// ── Filters ──
 const searchMatchedPlayers = computed(() => {
     const q = search.value.trim().toLowerCase()
-    if (!q) return PLAYER_RELICS
-    return PLAYER_RELICS.filter(p => p.name.toLowerCase().includes(q))
+    if (!q) return players.value
+    return players.value.filter(p => p.name.toLowerCase().includes(q))
 })
 
-// Regions valid given the current search — prevents picking a region no matched player has
 const availableRegions = computed(() => {
     const regions = new Set()
     searchMatchedPlayers.value.forEach(p => p.areas.forEach(a => regions.add(a)))
     return regions
 })
 
-// Players valid given the current region — prevents searching someone who isn't in that region
 const regionMatchedPlayers = computed(() => {
-    if (!selectedRegion.value) return PLAYER_RELICS
-    return PLAYER_RELICS.filter(p => p.areas.includes(selectedRegion.value))
+    if (!selectedRegion.value) return players.value
+    return players.value.filter(p => p.areas.includes(selectedRegion.value))
 })
 
-// Search dropdown only shows players compatible with the active region filter
 const searchSuggestions = computed(() => {
     const q = search.value.trim().toLowerCase()
     if (!q) return []
@@ -131,38 +184,26 @@ const searchSuggestions = computed(() => {
     )
 })
 
-// Auto-clear region when search changes and makes it incompatible
 watch(search, () => {
     if (selectedRegion.value && !availableRegions.value.has(selectedRegion.value)) {
         selectedRegion.value = null
     }
 })
 
-function selectPlayer(name) {
-    search.value = name
-    searchFocused.value = false
-}
+const filteredPlayers = computed(() => {
+    let list = players.value
+    if (selectedRegion.value) list = list.filter(p => p.areas.includes(selectedRegion.value))
+    const q = search.value.trim().toLowerCase()
+    if (q) list = list.filter(p => p.name.toLowerCase().includes(q))
+    return list
+})
 
-function onSearchBlur() {
-    setTimeout(() => { searchFocused.value = false }, 150)
-}
-
+function selectPlayer(name) { search.value = name; searchFocused.value = false }
+function onSearchBlur() { setTimeout(() => { searchFocused.value = false }, 150) }
 function toggleRegion(key) {
     if (!availableRegions.value.has(key)) return
     selectedRegion.value = selectedRegion.value === key ? null : key
 }
-
-const filteredPlayers = computed(() => {
-    let list = PLAYER_RELICS
-    if (selectedRegion.value) {
-        list = list.filter(p => p.areas.includes(selectedRegion.value))
-    }
-    const q = search.value.trim().toLowerCase()
-    if (q) {
-        list = list.filter(p => p.name.toLowerCase().includes(q))
-    }
-    return list
-})
 </script>
 
 <style scoped>
@@ -185,6 +226,37 @@ const filteredPlayers = computed(() => {
     color: var(--soul-gold);
     letter-spacing: 2px;
     text-shadow: 0 0 12px rgba(255, 179, 71, 0.4);
+}
+
+.refresh-btn {
+    margin-left: auto;
+    background: none;
+    border: 1px solid rgba(139, 0, 0, 0.45);
+    border-radius: 3px;
+    color: var(--ash);
+    font-size: 18px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+    line-height: 1;
+}
+
+.refresh-btn:hover {
+    color: var(--ember);
+    border-color: var(--ember);
+}
+
+.refresh-btn--spinning {
+    animation: spin 0.7s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
 .section-subtitle {
@@ -406,6 +478,40 @@ const filteredPlayers = computed(() => {
     text-align: center;
     line-height: 1.3;
     word-break: break-word;
+}
+
+/* ── Combat mastery ── */
+.combat-strip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.combat-label {
+    font-family: var(--font-subhead);
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--ash);
+    flex-shrink: 0;
+}
+
+.combat-badges {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.combat-badge {
+    font-family: var(--font-subhead);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    border: 1px solid;
+    opacity: 0.9;
 }
 
 /* ── Areas strip ── */
