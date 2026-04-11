@@ -7,6 +7,7 @@
                 <span class="title-deco">⸸</span>
             </h2>
             <div class="feed-status">
+                <button class="faq-btn" @click="faqOpen = true" title="Setup guide">Setup</button>
                 <span class="status-dot" :class="statusClass"></span>
                 <span class="status-label">{{ statusLabel }}</span>
                 <span class="event-count" v-if="connected">{{ events.length }} events</span>
@@ -65,6 +66,8 @@
         </div>
     </section>
 
+    <DinkFAQ :open="faqOpen" @close="faqOpen = false" />
+
     <div class="loot-tooltip" v-if="tooltip.visible" :style="tooltip.style">
         {{ tooltip.text }}
     </div>
@@ -74,12 +77,14 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import apiService from '@/services/apiService.js'
+import DinkFAQ from '@/components/DinkFAQ.vue'
 
 const events = ref([])
 const connected = ref(false)
 const disconnected = ref(false)
 const activeTab = ref('live')
 const latest = ref({}) // { [type]: event }
+const faqOpen = ref(false)
 let eventSource = null
 let nextId = 1
 
@@ -399,6 +404,28 @@ onUnmounted(() => eventSource?.close())
     font-size: 13px;
     color: var(--ash);
     letter-spacing: 1px;
+}
+
+/* FAQ button */
+.faq-btn {
+    font-family: var(--font-subhead);
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--ash);
+    background: rgba(139, 0, 0, 0.12);
+    border: 1px solid rgba(139, 0, 0, 0.35);
+    border-radius: 3px;
+    padding: 4px 9px;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.faq-btn:hover {
+    color: var(--soul-gold);
+    border-color: var(--crimson);
+    background: rgba(139, 0, 0, 0.3);
 }
 
 /* ── Feed tabs ── */
