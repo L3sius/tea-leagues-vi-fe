@@ -57,7 +57,10 @@
                         class="lightbox-img"
                         @click.stop
                     />
-                    <p class="lightbox-title">{{ lightboxEntry.title }}</p>
+                    <div class="lightbox-caption" @click.stop>
+                        <p class="lightbox-title">{{ lightboxEntry.title }}</p>
+                        <p class="lightbox-desc">{{ lightboxEntry.description }}</p>
+                    </div>
                 </div>
             </Transition>
         </Teleport>
@@ -324,6 +327,19 @@ function closeLightbox() { lightboxEntry.value = null }
     cursor: default;
 }
 
+.lightbox-caption {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 14px 24px;
+    border-top: 1px solid rgba(139, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.45);
+    border-radius: 4px;
+    max-width: 90vw;
+    text-align: center;
+}
+
 .lightbox-title {
     font-family: var(--font-subhead);
     font-size: 18px;
@@ -333,6 +349,17 @@ function closeLightbox() { lightboxEntry.value = null }
     text-transform: uppercase;
     text-shadow: 0 0 12px rgba(255, 179, 71, 0.5);
     margin: 0;
+}
+
+.lightbox-desc {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-style: italic;
+    color: var(--ash);
+    letter-spacing: 0.5px;
+    margin: 0;
+    line-height: 1.5;
+    opacity: 0.85;
 }
 
 .lightbox-enter-active,

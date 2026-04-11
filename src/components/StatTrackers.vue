@@ -29,6 +29,7 @@
 
                 <Transition name="expand">
                     <div v-if="expanded[tracker.key]" class="leaderboard">
+                        <div class="leaderboard-scroll">
                         <div v-for="(player, idx) in sorted(tracker.key)" :key="player.name" class="lb-row"
                             :class="tracker.key === 'leaguePoints' ? getRank(player.leaguePoints)?.cls : ''">
                             <span class="lb-pos">{{ idx + 1 }}</span>
@@ -45,6 +46,7 @@
                             <span class="lb-val" :class="{ 'lb-val--bad': tracker.key === 'deaths' }">
                                 {{ tracker.format(player[tracker.key]) }}
                             </span>
+                        </div>
                         </div>
                     </div>
                 </Transition>
@@ -252,9 +254,17 @@ function barWidth(val, key) {
 
 .leaderboard {
     padding: 8px 16px 12px;
+}
+
+.leaderboard-scroll {
     display: flex;
     flex-direction: column;
     gap: 5px;
+    max-height: 260px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--blood-red) transparent;
+    padding-right: 12px;
 }
 
 .leaderboard--rest {
@@ -391,7 +401,7 @@ function barWidth(val, key) {
 .expand-enter-active,
 .expand-leave-active {
     transition: opacity 0.25s ease, max-height 0.3s ease;
-    max-height: 400px;
+    max-height: 300px;
     overflow: hidden;
 }
 
