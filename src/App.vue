@@ -125,8 +125,8 @@ body,
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 80% 80% at 50% 50%, transparent 40%, rgba(0, 0, 0, 0.45) 100%),
-    rgba(5, 0, 0, 0.45);
+    radial-gradient(ellipse 80% 80% at 50% 50%, transparent 40%, rgba(0, 0, 0, 0.25) 100%),
+    rgba(5, 0, 0, 0.25);
 }
 
 /* ── Desktop layout ──────────────────────────────────────────────────────── */
@@ -149,11 +149,11 @@ body,
 }
 
 .side-left {
-  background: linear-gradient(90deg, rgba(5, 0, 0, 0.72) 0%, rgba(5, 0, 0, 0.18) 100%);
+  background: linear-gradient(90deg, rgba(5, 0, 0, 0.55) 0%, rgba(5, 0, 0, 0.08) 100%);
 }
 
 .side-right {
-  background: linear-gradient(270deg, rgba(5, 0, 0, 0.72) 0%, rgba(5, 0, 0, 0.18) 100%);
+  background: linear-gradient(270deg, rgba(5, 0, 0, 0.55) 0%, rgba(5, 0, 0, 0.08) 100%);
 }
 
 .middle-void {
