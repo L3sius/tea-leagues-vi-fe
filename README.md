@@ -1,22 +1,24 @@
 # TEA Clan — Leagues Dashboard
 
-A live tracking dashboard for TEA clan members participating in the **Demonic Pacts** OSRS Leagues event. Displays real-time clan stats, league point hiscores, and milestone progress — all in a hellfire gothic aesthetic.
+A live tracking dashboard for TEA clan members participating in the **Demonic Pacts** OSRS Leagues event. Displays real-time clan stats, milestone progress, league info, and a hall of fame — all in a hellfire gothic aesthetic.
 
 ---
 
 ## Features
 
-- **Live Feed** — Real-time event stream of drops, kills, levels, pets and GP earned via SSE
-- **Stat Trackers** — Per-player breakdown of GP, items, levels, pets, deaths, clogs, combat tasks and clue scrolls
-- **League Points** — Hiscores table with rank-tier coloring (Bronze → Dragon) pulled from the OSRS API
-- **Milestones** — Clan-wide progress bars toward configurable goals with live percentage tracking
+- **Live Feed** — Real-time SSE event stream of drops, kills, levels, pets, collection log slots, clue scrolls, combat tasks, and kill counts. Two tabs: *Live* (rolling feed) and *Latest Actions* (most recent event per type). Hover loot/clue/collection entries to see item details.
+- **Stat Trackers** — Expandable per-player leaderboards for GP, items, levels, pets, deaths, clog slots, combat tasks, clue scrolls, kill count, league tasks, and league points. Expanded rows scroll independently — handles large rosters cleanly. League point rows show rank-tier badge coloring (Bronze → Dragon).
+- **Milestones** — Clan-wide progress bars toward configurable goals with live percentage and remaining count. Bright orange-to-gold gradient bars with glow.
+- **League Info** — Live panel showing each player's unlocked relics, areas, and combat mastery tiers fetched from `/getLeagueStats`. Filter by region or search by player name with smart cross-constraints. Refresh button re-fetches on demand.
+- **Hall of Fame** — Painting-frame grid of clan achievements. Completed entries show a screenshot; click to open a fullscreen lightbox with title and description.
+- **Dink Setup Guide** — In-feed modal explaining how to connect the Dink RuneLite plugin. Config URL is click-to-copy.
 
 ---
 
 ## Requirements
 
 - Node.js `^20.19.0` or `>=22.12.0`
-- A running instance of the TEA backend (provides `/getTeams`, `/getPlayerStats`, `/getStatsStream`, `/getActionStream`)
+- A running instance of the TEA backend
 
 ---
 
@@ -47,14 +49,14 @@ npm run format
 
 ## Backend Connection
 
-The frontend expects a backend running at `http://localhost:3000` by default. Override this with an environment variable:
+The frontend expects a backend at `http://localhost:3000` by default. Override with:
 
 ```bash
 # .env.local
 VITE_API_BASE_URL=http://your-backend-host:3000
 ```
 
-The following endpoints are consumed:
+Endpoints consumed:
 
 | Endpoint | Type | Description |
 |---|---|---|
@@ -62,17 +64,7 @@ The following endpoints are consumed:
 | `GET /getPlayerStats` | REST | Returns full player stat snapshots |
 | `GET /getStatsStream` | SSE | Streams `history` and `stats` events with live clan data |
 | `GET /getActionStream` | SSE | Streams live feed events (drops, kills, levels, etc.) |
-
-### OSRS Hiscores Proxy
-
-The dev server proxies OSRS hiscore requests to avoid CORS issues. This is already configured in `vite.config.ts` — no extra setup needed in development:
-
-```
-/api/hiscores?player=<name>
-  → https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws?player=<name>
-```
-
-> The hiscore fetching is currently rate-limited to one request per player every 10 minutes. The fetch calls are commented out by default — enable them in `LeaguePoints.vue` when ready.
+| `GET /getLeagueStats` | REST | Returns per-player relics, areas, and combat mastery |
 
 ---
 
@@ -80,21 +72,23 @@ The dev server proxies OSRS hiscore requests to avoid CORS issues. This is alrea
 
 ```
 src/
-├── App.vue                   # Root layout — two side panels over a video background
-├── main.js                   # App entry, mounts Vue
+├── App.vue                    # Root layout — two side panels over a video background
+├── main.js                    # App entry, mounts Vue
 ├── assets/
-│   └── main.css              # Global theme: CSS variables, panel styles, typography
+│   └── main.css               # Global theme: CSS variables, panel styles, typography
 ├── components/
-│   ├── LiveFeed.vue           # Scrolling real-time event feed (left panel)
-│   ├── StatTrackers.vue       # Expandable per-player stat rows (right panel)
-│   ├── LeaguePoints.vue       # OSRS hiscores table with rank-tier row coloring
-│   └── Milestones.vue         # Clan goal progress bars
+│   ├── LiveFeed.vue            # Real-time event feed with Live / Latest Actions tabs
+│   ├── StatTrackers.vue        # Expandable scrollable per-player stat leaderboards
+│   ├── Milestones.vue          # Clan goal progress bars
+│   ├── LeagueInfoPanel.vue     # Live league info: relics, areas, combat mastery
+│   ├── HallOfFamePanel.vue     # Painting-frame grid with lightbox
+│   └── DinkFAQ.vue             # Dink plugin setup modal (opened from Live Feed header)
 ├── data/
-│   └── mockData.js            # Leftover mock data — no longer used in main flow
+│   └── hallOfFame.json         # Hall of Fame entries (id, title, description, imageUrl, completed)
 ├── services/
-│   └── apiService.js          # Fetch wrappers for all backend endpoints
+│   └── apiService.js           # Fetch/SSE wrappers for all backend endpoints
 └── stores/
-    └── StatsStore.js          # Global reactive state: player list, SSE connection
+    └── statsStore.js           # Global reactive state: player list, SSE connection
 ```
 
 ---
@@ -103,7 +97,7 @@ src/
 
 ### Milestone Goals
 
-All milestone targets are defined in a single `GOALS` object at the top of `Milestones.vue`. Change a value there and the label, progress bar, and remaining count update automatically:
+All targets are defined in a single `GOALS` object at the top of `Milestones.vue`:
 
 ```js
 const GOALS = {
@@ -114,12 +108,17 @@ const GOALS = {
     clogsEarned:   10_000,
     combatTasks:   1_000,
     clueScrolls:   10_000,
+    killCount:     10_000,
+    leagueTasks:   10_000,
+    leaguePoints:  500_000,
 }
 ```
 
+Change a value and the label, bar, and remaining count update automatically.
+
 ### League Point Rank Tiers
 
-Rank thresholds and their row colors are defined in `RANK_TIERS` in `LeaguePoints.vue`:
+Thresholds and colors are defined in `RANK_TIERS` in `StatTrackers.vue`:
 
 ```js
 const RANK_TIERS = [
@@ -133,18 +132,22 @@ const RANK_TIERS = [
 ]
 ```
 
+### Hall of Fame Entries
+
+Add or edit entries in `src/data/hallOfFame.json`. Set `completed: true` and provide an `imageUrl` to display a painting — otherwise the frame shows a locked placeholder.
+
 ---
 
 ## Theme
 
 All colors are CSS variables defined in `src/assets/main.css`:
 
-| Variable        | Hex       | Use                        |
-|-----------------|-----------|----------------------------|
-| `--blood-red`   | `#8b0000` | Borders, accents           |
-| `--crimson`     | `#c0392b` | Bars, highlights           |
-| `--ember`       | `#ff6b35` | Active elements, glow      |
-| `--sulfur`      | `#ffd700` | Gold values, complete bars |
-| `--soul-gold`   | `#ffb347` | Section headings           |
-| `--bone`        | `#d4c5a9` | Body text                  |
-| `--ash`         | `#8a8070` | Muted / secondary text     |
+| Variable      | Hex       | Use                        |
+|---------------|-----------|----------------------------|
+| `--blood-red` | `#8b0000` | Borders, accents           |
+| `--crimson`   | `#c0392b` | Bars, highlights           |
+| `--ember`     | `#ff6b35` | Active elements, glow      |
+| `--sulfur`    | `#ffd700` | Gold values, complete bars |
+| `--soul-gold` | `#ffb347` | Section headings           |
+| `--bone`      | `#d4c5a9` | Body text                  |
+| `--ash`       | `#8a8070` | Muted / secondary text     |
