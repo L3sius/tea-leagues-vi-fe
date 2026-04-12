@@ -33,14 +33,15 @@
                             :class="{ 'clue-source': event.type === 'clue' }"
                             :title="event.lootItems ? `${event.lootSource} — ${event.lootItems}` : event.lootSource"
                             @mouseenter="showTooltip($event, event.lootItems)" @mouseleave="hideTooltip">
-                            {{ event.lootSource }}
+                            {{ event.type === 'drop' ? `Got loot from: ${event.lootSource}` : event.lootSource }}
                         </span>
                         <span v-else class="event-message" :title="event.message">{{ event.message }}</span>
-                        <span v-for="t in event.tiers" :key="t"
-                            class="tier-badge"
-                            :style="{ color: tierColor(t), borderColor: tierColor(t) }">
-                            T{{ t }}
-                        </span>
+                        <div v-if="event.type === 'drop'" class="tier-badges">
+                            <span v-for="t in event.tiers" :key="t" class="tier-badge"
+                                :style="{ color: tierColor(t), borderColor: tierColor(t) }">
+                                T{{ t }}
+                            </span>
+                        </div>
                     </div>
                 </TransitionGroup>
             </div>
@@ -233,7 +234,7 @@ function parseMessage(raw, isSuccess) {
     } else if (rawType === 'KILL_COUNT') {
         // Extract monster name from first markdown link: [MonsterName](url)
         const monsterMatch = raw.match(/\[([^\]]+)\]\(https?:\/\//)
-        message = monsterMatch ? `Killed ${monsterMatch[1]}` : 'Got a kill'
+        message = monsterMatch ? `Conquered: ${monsterMatch[1]}` : 'Got a kill'
     } else {
         const remaining = tokens.slice(2)
         message = remaining.length > 0
@@ -670,6 +671,7 @@ onUnmounted(() => eventSource?.close())
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    text-align: left;
 }
 
 .event-message {
@@ -677,7 +679,15 @@ onUnmounted(() => eventSource?.close())
     color: inherit;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-align: left;
     flex: 1;
+}
+
+.tier-badges {
+    display: flex;
+    gap: 3px;
+    flex-shrink: 0;
+    min-width: 36px;
 }
 
 .tier-badge {
@@ -748,6 +758,7 @@ onUnmounted(() => eventSource?.close())
     cursor: help;
     color: #ffd070;
     text-decoration: none;
+    text-align: left;
 }
 
 .loot-source:hover {
