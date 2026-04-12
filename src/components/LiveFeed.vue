@@ -65,7 +65,7 @@
                     <span class="latest-type-label">{{ entry.typeLabel }}</span>
                     <div class="latest-content">
                         <span class="latest-player">{{ entry.player }}</span>
-                        <span class="latest-message">{{ entry.lootSource || entry.message }}</span>
+                        <span class="latest-message">{{ entry.shortMessage }}</span>
                         <span class="latest-time">{{ entry.time }}</span>
                     </div>
                 </div>
@@ -106,9 +106,18 @@ const TYPE_LABELS = {
     kill: 'Kill Count',
 }
 
+const PREFIXES = ['Got loot from: ', 'Conquered: ']
+
+function stripPrefix(msg) {
+    for (const p of PREFIXES) {
+        if (msg.startsWith(p)) return msg.slice(p.length)
+    }
+    return msg
+}
+
 const latestList = computed(() =>
     Object.entries(latest.value)
-        .map(([type, event]) => ({ ...event, typeLabel: TYPE_LABELS[type] ?? type }))
+        .map(([type, event]) => ({ ...event, typeLabel: TYPE_LABELS[type] ?? type, shortMessage: stripPrefix(event.lootSource || event.message) }))
         .sort((a, b) => TYPE_LABELS[a.type]?.localeCompare(TYPE_LABELS[b.type]))
 )
 
