@@ -26,8 +26,7 @@
 
                 <div class="ms-header">
                     <div class="ms-title-group">
-                        <span class="ms-title">{{ ms.label }}</span>
-                        <span class="ms-detail">{{ ms.formatCurrent(ms.current) }} / {{ ms.formatGoal(ms.goal) }}</span>
+                        <span class="ms-title"><span class="ms-progress">{{ ms.formatCurrent(ms.current) }}/{{ ms.formatGoal(ms.goal) }}</span> {{ ms.label }}</span>
                     </div>
                     <div class="ms-badge" :class="badgeClass(ms.pct)">
                         {{ ms.pct >= 100 ? 'DONE' : ms.pct + '%' }}
@@ -71,30 +70,30 @@ function fmtNum(v) { return v.toLocaleString() }
 
 // ── Change goals here ────────────────────────────────────────────────────────
 const GOALS = {
-    gpEarned:      50_000_0,
-    itemsReceived: 10_000_000,
-    levelsEarned:  10_000,
-    petsEarned:    10,
-    clogsEarned:   10_000,
-    combatTasks:   1_000,
-    clueScrolls:   14,
-    killCount:     10_000,
-    leagueTasks:   10_000,
-    leaguePoints:  500_000,
+    gpEarned: 5000000000,
+    itemsReceived: 1000000,
+    levelsEarned: 100000,
+    petsEarned: 1,
+    clogsEarned: 1,
+    combatTasks: 1,
+    clueScrolls: 1,
+    killCount: 50000,
+    leagueTasks: 1,
+    leaguePoints: 1,
 }
 // ────────────────────────────────────────────────────────────────────────────
 
 const milestones = computed(() => [
-    { key: 'gpEarned', label: `${fmtGP(GOALS.gpEarned)} GP Earned`, goal: GOALS.gpEarned, current: clanSum('gpEarned'), formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('gpEarned'), GOALS.gpEarned), barWidth: barWidth(clanSum('gpEarned'), GOALS.gpEarned), leader: topPlayer('gpEarned') },
-    { key: 'itemsReceived', label: `${fmtNum(GOALS.itemsReceived)} Items Received`, goal: GOALS.itemsReceived, current: clanSum('itemsReceived'), formatCurrent: fmtNum, formatGoal: fmtNum, pct: pct(clanSum('itemsReceived'), GOALS.itemsReceived), barWidth: barWidth(clanSum('itemsReceived'), GOALS.itemsReceived), leader: topPlayer('itemsReceived') },
-    { key: 'levelsEarned', label: `${fmtNum(GOALS.levelsEarned)} Levels Earned`, goal: GOALS.levelsEarned, current: clanSum('levelsEarned'), formatCurrent: fmtNum, formatGoal: fmtNum, pct: pct(clanSum('levelsEarned'), GOALS.levelsEarned), barWidth: barWidth(clanSum('levelsEarned'), GOALS.levelsEarned), leader: topPlayer('levelsEarned') },
-    { key: 'petsEarned', label: `${fmtNum(GOALS.petsEarned)} Pets Received`, goal: GOALS.petsEarned, current: clanSum('petsEarned'), formatCurrent: fmtNum, formatGoal: fmtNum, pct: pct(clanSum('petsEarned'), GOALS.petsEarned), barWidth: barWidth(clanSum('petsEarned'), GOALS.petsEarned), leader: topPlayer('petsEarned') },
-    { key: 'clogsEarned', label: `${fmtNum(GOALS.clogsEarned)} Clog Slots`, goal: GOALS.clogsEarned, current: clanSum('clogsEarned'), formatCurrent: fmtNum, formatGoal: fmtNum, pct: pct(clanSum('clogsEarned'), GOALS.clogsEarned), barWidth: barWidth(clanSum('clogsEarned'), GOALS.clogsEarned), leader: topPlayer('clogsEarned') },
-    { key: 'combatTasks', label: `${fmtNum(GOALS.combatTasks)} Combat Tasks`, goal: GOALS.combatTasks, current: clanSum('combatTasks'), formatCurrent: fmtNum, formatGoal: fmtNum, pct: pct(clanSum('combatTasks'), GOALS.combatTasks), barWidth: barWidth(clanSum('combatTasks'), GOALS.combatTasks), leader: topPlayer('combatTasks') },
-    { key: 'clueScrolls',  label: `${fmtNum(GOALS.clueScrolls)} Clue Scrolls`,   goal: GOALS.clueScrolls,  current: clanSum('clueScrolls'),  formatCurrent: fmtNum, formatGoal: fmtNum, pct: pct(clanSum('clueScrolls'), GOALS.clueScrolls),    barWidth: barWidth(clanSum('clueScrolls'), GOALS.clueScrolls),    leader: topPlayer('clueScrolls') },
-    { key: 'killCount',    label: `${fmtNum(GOALS.killCount)} Bosses Killed`,    goal: GOALS.killCount,    current: clanSum('killCount'),    formatCurrent: fmtNum, formatGoal: fmtNum, pct: pct(clanSum('killCount'), GOALS.killCount),          barWidth: barWidth(clanSum('killCount'), GOALS.killCount),          leader: topPlayer('killCount') },
-    { key: 'leagueTasks',  label: `${fmtNum(GOALS.leagueTasks)} Tasks Completed`, goal: GOALS.leagueTasks,  current: clanSum('leagueTasks'),  formatCurrent: fmtNum, formatGoal: fmtNum, pct: pct(clanSum('leagueTasks'), GOALS.leagueTasks),      barWidth: barWidth(clanSum('leagueTasks'), GOALS.leagueTasks),      leader: topPlayer('leagueTasks') },
-    { key: 'leaguePoints', label: `${fmtNum(GOALS.leaguePoints)} League Points`,  goal: GOALS.leaguePoints, current: clanSum('leaguePoints'), formatCurrent: fmtNum, formatGoal: fmtNum, pct: pct(clanSum('leaguePoints'), GOALS.leaguePoints),    barWidth: barWidth(clanSum('leaguePoints'), GOALS.leaguePoints),    leader: topPlayer('leaguePoints') },
+    { key: 'gpEarned',      label: 'GP Earned',        goal: GOALS.gpEarned,      current: clanSum('gpEarned'),      formatCurrent: fmtGP,  formatGoal: fmtGP,  pct: pct(clanSum('gpEarned'),      GOALS.gpEarned),      barWidth: barWidth(clanSum('gpEarned'),      GOALS.gpEarned),      leader: topPlayer('gpEarned') },
+    { key: 'itemsReceived', label: 'Items Received',    goal: GOALS.itemsReceived, current: clanSum('itemsReceived'), formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('itemsReceived'), GOALS.itemsReceived), barWidth: barWidth(clanSum('itemsReceived'), GOALS.itemsReceived), leader: topPlayer('itemsReceived') },
+    { key: 'levelsEarned',  label: 'Levels Earned',     goal: GOALS.levelsEarned,  current: clanSum('levelsEarned'),  formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('levelsEarned'),  GOALS.levelsEarned),  barWidth: barWidth(clanSum('levelsEarned'),  GOALS.levelsEarned),  leader: topPlayer('levelsEarned') },
+    { key: 'petsEarned',    label: 'Pets Received',     goal: GOALS.petsEarned,    current: clanSum('petsEarned'),    formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('petsEarned'),    GOALS.petsEarned),    barWidth: barWidth(clanSum('petsEarned'),    GOALS.petsEarned),    leader: topPlayer('petsEarned') },
+    { key: 'clogsEarned',   label: 'Clog Slots',        goal: GOALS.clogsEarned,   current: clanSum('clogsEarned'),   formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('clogsEarned'),   GOALS.clogsEarned),   barWidth: barWidth(clanSum('clogsEarned'),   GOALS.clogsEarned),   leader: topPlayer('clogsEarned') },
+    { key: 'combatTasks',   label: 'Combat Tasks',      goal: GOALS.combatTasks,   current: clanSum('combatTasks'),   formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('combatTasks'),   GOALS.combatTasks),   barWidth: barWidth(clanSum('combatTasks'),   GOALS.combatTasks),   leader: topPlayer('combatTasks') },
+    { key: 'clueScrolls',   label: 'Clue Scrolls',      goal: GOALS.clueScrolls,   current: clanSum('clueScrolls'),   formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('clueScrolls'),   GOALS.clueScrolls),   barWidth: barWidth(clanSum('clueScrolls'),   GOALS.clueScrolls),   leader: topPlayer('clueScrolls') },
+    { key: 'killCount',     label: 'Bosses Killed',     goal: GOALS.killCount,     current: clanSum('killCount'),     formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('killCount'),     GOALS.killCount),     barWidth: barWidth(clanSum('killCount'),     GOALS.killCount),     leader: topPlayer('killCount') },
+    { key: 'leagueTasks',   label: 'Tasks Completed',   goal: GOALS.leagueTasks,   current: clanSum('leagueTasks'),   formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('leagueTasks'),   GOALS.leagueTasks),   barWidth: barWidth(clanSum('leagueTasks'),   GOALS.leagueTasks),   leader: topPlayer('leagueTasks') },
+    { key: 'leaguePoints',  label: 'League Points',     goal: GOALS.leaguePoints,  current: clanSum('leaguePoints'),  formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('leaguePoints'),  GOALS.leaguePoints),  barWidth: barWidth(clanSum('leaguePoints'),  GOALS.leaguePoints),  leader: topPlayer('leaguePoints') },
 ])
 
 const completedCount = computed(() => milestones.value.filter(m => m.pct >= 100).length)
@@ -239,15 +238,12 @@ function badgeClass(p) {
 }
 
 .ms-title-group {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
     min-width: 0;
 }
 
 .ms-title {
     font-family: 'Cinzel', serif;
-    font-size: 21px;
+    font-size: 19px;
     font-weight: 700;
     color: #f0ece4;
     letter-spacing: 0.5px;
@@ -257,11 +253,10 @@ function badgeClass(p) {
     color: #ffd070;
 }
 
-.ms-detail {
-    font-size: 19px;
-    color: #c8c0b8;
-    font-style: italic;
-    text-align: left;
+.ms-progress {
+    color: #f0ece4;
+    font-weight: 700;
+    margin-right: 4px;
 }
 
 .ms-badge {
