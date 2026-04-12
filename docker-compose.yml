@@ -1,6 +1,9 @@
 services:
   tea-frontend:
-    build: .
+    build:
+      context: .
+      args:
+        VITE_API_BASE_URL: https://api.tea-osrs.com
     image: tea-frontend
     restart: unless-stopped
     ports:

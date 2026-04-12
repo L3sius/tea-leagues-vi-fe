@@ -19,13 +19,4 @@ jobs:
           script: |
             cd /root/tea-leagues-vi-fe
             git pull origin main
-            docker build \
-              --build-arg VITE_API_BASE_URL=https://api.tea-osrs.com \
-              -t tea-frontend .
-            docker stop tea-frontend || true
-            docker rm tea-frontend || true
-            docker run -d \
-              --name tea-frontend \
-              --restart unless-stopped \
-              -p 80:80 \
-              tea-frontend
+            docker compose up -d --build
