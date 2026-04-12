@@ -18,13 +18,6 @@ export default defineConfig({
   server: {
     watch: {
       usePolling: true,
-    },
-    proxy: {
-      '/api/hiscores': {
-        target: 'https://secure.runescape.com',
-        changeOrigin: true,
-        rewrite: (path) => path.replace('/api/hiscores', '/m=hiscore_oldschool/index_lite.ws')
-      }
     }
   }
 })
