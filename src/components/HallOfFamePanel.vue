@@ -8,12 +8,8 @@
         <div class="runic-divider"><span>✦ ⸸ ✦</span></div>
 
         <div class="frames-grid">
-            <div
-                v-for="entry in entries"
-                :key="entry.id"
-                class="painting-frame"
-                :class="{ 'painting-frame--done': entry.completed }"
-            >
+            <div v-for="entry in entries" :key="entry.id" class="painting-frame"
+                :class="{ 'painting-frame--done': entry.completed }">
                 <!-- Ornate frame corners -->
                 <div class="frame-corner frame-corner--tl">✦</div>
                 <div class="frame-corner frame-corner--tr">✦</div>
@@ -22,16 +18,11 @@
 
                 <!-- Painting canvas -->
                 <div class="painting-canvas">
-                    <img
-                        v-if="entry.completed && entry.imageUrl"
-                        :src="entry.imageUrl"
-                        :alt="entry.title"
-                        class="painting-image"
-                        @click="openLightbox(entry)"
-                    />
+                    <img v-if="entry.completed && entry.imageUrl" :src="entry.imageUrl" :alt="entry.title"
+                        class="painting-image" @click="openLightbox(entry)" />
                     <div v-else class="painting-placeholder">
                         <div class="placeholder-lock">🔒</div>
-                        <p class="placeholder-text">Task not yet<br/>completed</p>
+                        <p class="placeholder-text">Task not yet<br />completed</p>
                     </div>
                 </div>
 
@@ -51,12 +42,7 @@
         <Teleport to="body">
             <Transition name="lightbox">
                 <div v-if="lightboxEntry" class="lightbox-backdrop" @click="closeLightbox">
-                    <img
-                        :src="lightboxEntry.imageUrl"
-                        :alt="lightboxEntry.title"
-                        class="lightbox-img"
-                        @click.stop
-                    />
+                    <img :src="lightboxEntry.imageUrl" :alt="lightboxEntry.title" class="lightbox-img" @click.stop />
                     <div class="lightbox-caption" @click.stop>
                         <p class="lightbox-title">{{ lightboxEntry.title }}</p>
                         <p class="lightbox-desc">{{ lightboxEntry.description }}</p>
@@ -164,10 +150,25 @@ function closeLightbox() { lightboxEntry.value = null }
     pointer-events: none;
 }
 
-.frame-corner--tl { top: 4px;  left: 6px; }
-.frame-corner--tr { top: 4px;  right: 6px; }
-.frame-corner--bl { bottom: 4px; left: 6px; }
-.frame-corner--br { bottom: 4px; right: 6px; }
+.frame-corner--tl {
+    top: 4px;
+    left: 6px;
+}
+
+.frame-corner--tr {
+    top: 4px;
+    right: 6px;
+}
+
+.frame-corner--bl {
+    bottom: 4px;
+    left: 6px;
+}
+
+.frame-corner--br {
+    bottom: 4px;
+    right: 6px;
+}
 
 .painting-frame--done .frame-corner {
     color: #ff6b35;
@@ -207,13 +208,11 @@ function closeLightbox() { lightboxEntry.value = null }
     justify-content: center;
     gap: 6px;
     background:
-        repeating-linear-gradient(
-            45deg,
+        repeating-linear-gradient(45deg,
             transparent,
             transparent 12px,
             rgba(139, 0, 0, 0.04) 12px,
-            rgba(139, 0, 0, 0.04) 13px
-        ),
+            rgba(139, 0, 0, 0.04) 13px),
         rgba(8, 1, 1, 0.85);
 }
 
@@ -268,10 +267,13 @@ function closeLightbox() { lightboxEntry.value = null }
 }
 
 @keyframes emberGlow {
-    0%, 100% {
+
+    0%,
+    100% {
         text-shadow: 0 0 6px rgba(255, 107, 53, 0.7), 0 0 12px rgba(255, 107, 53, 0.3);
         opacity: 1;
     }
+
     50% {
         text-shadow: 0 0 14px rgba(255, 107, 53, 1), 0 0 28px rgba(255, 107, 53, 0.6), 0 0 42px rgba(220, 50, 0, 0.3);
         opacity: 0.85;
@@ -292,10 +294,9 @@ function closeLightbox() { lightboxEntry.value = null }
 
 .frame-desc {
     font-family: 'IM Fell English', Georgia, serif;
-    font-size: 11px;
-    font-style: italic;
-    color: #c8c0b8;
-    line-height: 1.45;
+    font-size: 14px;
+    color: #e8e0d4;
+    line-height: 1.5;
     letter-spacing: 0.2px;
 }
 
