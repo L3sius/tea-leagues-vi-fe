@@ -335,10 +335,10 @@ onUnmounted(() => eventSource?.close())
 }
 
 .section-title {
-    font-family: var(--font-heading);
+    font-family: 'Cinzel Decorative', 'Cinzel', serif;
     font-size: 29px;
     font-weight: 700;
-    color: var(--soul-gold);
+    color: #ffd070;
     letter-spacing: 2px;
     text-shadow: 0 0 12px rgba(255, 179, 71, 0.4);
     display: flex;
@@ -347,7 +347,7 @@ onUnmounted(() => eventSource?.close())
 }
 
 .title-deco {
-    color: var(--blood-red);
+    color: #8b0000;
     font-size: 18px;
     opacity: 0.8;
 }
@@ -374,8 +374,8 @@ onUnmounted(() => eventSource?.close())
 }
 
 .status--connecting {
-    background: var(--brimstone);
-    box-shadow: 0 0 8px var(--brimstone);
+    background: #ff8c00;
+    box-shadow: 0 0 8px #ff8c00;
     animation: hellPulse 1s ease-in-out infinite;
 }
 
@@ -385,11 +385,11 @@ onUnmounted(() => eventSource?.close())
 }
 
 .status-label {
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 13px;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: var(--ash);
+    color: #c8c0b8;
 }
 
 .status--connected+.status-label {
@@ -397,22 +397,22 @@ onUnmounted(() => eventSource?.close())
 }
 
 .status--connecting+.status-label {
-    color: var(--brimstone);
+    color: #ff8c00;
 }
 
 .event-count {
     font-size: 13px;
-    color: var(--ash);
+    color: #c8c0b8;
     letter-spacing: 1px;
 }
 
 /* FAQ button */
 .faq-btn {
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 11px;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: var(--ash);
+    color: #c8c0b8;
     background: rgba(139, 0, 0, 0.12);
     border: 1px solid rgba(139, 0, 0, 0.35);
     border-radius: 3px;
@@ -423,8 +423,8 @@ onUnmounted(() => eventSource?.close())
 }
 
 .faq-btn:hover {
-    color: var(--soul-gold);
-    border-color: var(--crimson);
+    color: #ffd070;
+    border-color: #c0392b;
     background: rgba(139, 0, 0, 0.3);
 }
 
@@ -437,29 +437,29 @@ onUnmounted(() => eventSource?.close())
 }
 
 .feed-tab {
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 13px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--ash);
+    color: #c8c0b8;
     background: rgba(18, 2, 2, 0.75);
     border: 1px solid rgba(139, 0, 0, 0.45);
-    border-radius: var(--radius-md);
+    border-radius: 6px;
     padding: 8px 12px;
     cursor: pointer;
     transition: all 0.2s;
 }
 
 .feed-tab:hover {
-    color: var(--ember);
-    border-color: var(--blood-red);
+    color: #ff6b35;
+    border-color: #8b0000;
     background: rgba(139, 0, 0, 0.2);
 }
 
 .feed-tab--active {
-    color: var(--soul-gold);
+    color: #ffd070;
     background: rgba(139, 0, 0, 0.35);
-    border-color: var(--crimson);
+    border-color: #c0392b;
     box-shadow: 0 0 20px rgba(139, 0, 0, 0.45), inset 0 1px 0 rgba(255, 107, 53, 0.15);
     text-shadow: 0 0 10px rgba(255, 179, 71, 0.5);
 }
@@ -486,7 +486,7 @@ onUnmounted(() => eventSource?.close())
 }
 
 .latest-type-label {
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 14px;
     font-weight: 700;
     letter-spacing: 3px;
@@ -505,10 +505,10 @@ onUnmounted(() => eventSource?.close())
 }
 
 .latest-player {
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 17px;
     font-weight: 600;
-    color: var(--ember);
+    color: #ff6b35;
     flex-shrink: 0;
 }
 
@@ -524,7 +524,7 @@ onUnmounted(() => eventSource?.close())
 
 .latest-time {
     font-size: 13px;
-    color: var(--ash);
+    color: #c8c0b8;
     font-style: italic;
     flex-shrink: 0;
 }
@@ -542,7 +542,7 @@ onUnmounted(() => eventSource?.close())
     overflow-y: auto;
     padding: 10px 14px;
     scrollbar-width: thin;
-    scrollbar-color: var(--blood-red) transparent;
+    scrollbar-color: #8b0000 transparent;
 }
 
 .events-list {
@@ -577,8 +577,8 @@ onUnmounted(() => eventSource?.close())
 }
 
 .event-type--drop {
-    border-left-color: var(--sulfur);
-    color: var(--sulfur);
+    border-left-color: #ffd700;
+    color: #ffd700;
 }
 
 .event-type--level {
@@ -618,17 +618,17 @@ onUnmounted(() => eventSource?.close())
 
 .event-time {
     font-size: 13px;
-    color: var(--ash);
+    color: #c8c0b8;
     font-style: italic;
     flex-shrink: 0;
     min-width: 72px;
 }
 
 .event-player {
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 16px;
     font-weight: 600;
-    color: var(--ember);
+    color: #ff6b35;
     flex-shrink: 0;
 }
 
@@ -653,15 +653,15 @@ onUnmounted(() => eventSource?.close())
 
 .empty-icon {
     font-size: 36px;
-    color: var(--blood-red);
+    color: #8b0000;
     opacity: 0.4;
     animation: hellPulse 3s ease-in-out infinite;
 }
 
 .empty-text {
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 14px;
-    color: var(--ash);
+    color: #c8c0b8;
     letter-spacing: 2px;
     text-transform: uppercase;
     text-align: center;
@@ -694,14 +694,14 @@ onUnmounted(() => eventSource?.close())
 .loot-source {
     position: relative;
     cursor: help;
-    color: var(--soul-gold);
+    color: #ffd070;
     border-bottom: 1px dashed rgba(255, 179, 71, 0.4);
     text-decoration: none;
 }
 
 .loot-source:hover {
-    color: var(--sulfur);
-    border-bottom-color: var(--sulfur);
+    color: #ffd700;
+    border-bottom-color: #ffd700;
 }
 
 .loot-tooltip {
@@ -709,13 +709,13 @@ onUnmounted(() => eventSource?.close())
     z-index: 9999;
     pointer-events: none;
     background: linear-gradient(160deg, rgba(25, 3, 3, 0.98) 0%, rgba(12, 1, 1, 0.98) 100%);
-    border: 1px solid var(--blood-red);
+    border: 1px solid #8b0000;
     border-top: 1px solid rgba(255, 107, 53, 0.4);
-    border-radius: var(--radius-md);
+    border-radius: 6px;
     padding: 10px 14px;
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 13px;
-    color: var(--soul-gold);
+    color: #ffd070;
     white-space: normal;
     min-width: 180px;
     max-width: 300px;
@@ -734,7 +734,7 @@ onUnmounted(() => eventSource?.close())
     left: 50%;
     transform: translateX(-50%);
     border: 7px solid transparent;
-    border-top-color: var(--blood-red);
+    border-top-color: #8b0000;
 }
 
 .loot-source:hover .loot-tooltip {

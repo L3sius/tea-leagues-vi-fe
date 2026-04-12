@@ -73,8 +73,8 @@ function copyUrl() {
     width: 100%;
     max-width: 520px;
     padding: 36px 40px 40px;
-    border: 1px solid var(--crimson) !important;
-    border-top: 2px solid var(--ember) !important;
+    border: 1px solid #c0392b !important;
+    border-top: 2px solid #ff6b35 !important;
     box-shadow:
         0 0 0 1px rgba(255, 107, 53, 0.12) inset,
         0 0 40px rgba(139, 0, 0, 0.7),
@@ -88,7 +88,7 @@ function copyUrl() {
     right: 16px;
     background: none;
     border: none;
-    color: var(--ash);
+    color: #c8c0b8;
     font-size: 16px;
     cursor: pointer;
     opacity: 0.6;
@@ -98,14 +98,14 @@ function copyUrl() {
 
 .faq-close:hover {
     opacity: 1;
-    color: var(--ember);
+    color: #ff6b35;
 }
 
 .faq-title {
-    font-family: var(--font-heading);
+    font-family: 'Cinzel Decorative', 'Cinzel', serif;
     font-size: 26px;
     font-weight: 700;
-    color: var(--soul-gold);
+    color: #ffd070;
     letter-spacing: 2px;
     text-shadow: 0 0 12px rgba(255, 179, 71, 0.4);
     display: flex;
@@ -115,15 +115,15 @@ function copyUrl() {
 }
 
 .title-deco {
-    color: var(--blood-red);
+    color: #8b0000;
     font-size: 16px;
     opacity: 0.8;
 }
 
 .faq-subtitle {
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 13px;
-    color: var(--ash);
+    color: #c8c0b8;
     letter-spacing: 1.5px;
     text-transform: uppercase;
     margin: 0;
@@ -132,7 +132,7 @@ function copyUrl() {
 
 .faq-divider {
     height: 1px;
-    background: linear-gradient(90deg, transparent, var(--blood-red), transparent);
+    background: linear-gradient(90deg, transparent, #8b0000, transparent);
     margin: 22px 0;
     opacity: 0.5;
 }
@@ -144,12 +144,12 @@ function copyUrl() {
 }
 
 .block-title {
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 15px;
     font-weight: 700;
     letter-spacing: 2.5px;
     text-transform: uppercase;
-    color: var(--ember);
+    color: #ff6b35;
     margin: 0;
     padding-bottom: 8px;
     border-bottom: 1px solid rgba(255, 107, 53, 0.25);
@@ -166,7 +166,7 @@ function copyUrl() {
 
 .instruction-list li {
     font-size: 14.5px;
-    color: var(--bone);
+    color: #f0ece4;
     line-height: 1.5;
     position: relative;
     padding-left: 4px;
@@ -176,14 +176,14 @@ function copyUrl() {
     content: '›';
     position: absolute;
     left: -14px;
-    color: var(--blood-red);
+    color: #8b0000;
     font-size: 16px;
     line-height: 1.4;
 }
 
 .instruction-list em {
     font-style: normal;
-    color: var(--soul-gold);
+    color: #ffd070;
 }
 
 .code-scroll {
@@ -200,24 +200,24 @@ function copyUrl() {
 }
 
 .code-scroll:hover {
-    border-color: var(--ember);
+    border-color: #ff6b35;
     background: rgba(139, 0, 0, 0.12);
 }
 
 .code-scroll code {
     font-family: 'Courier New', monospace;
     font-size: 13.5px;
-    color: var(--soul-gold);
+    color: #ffd070;
     letter-spacing: 0.5px;
     word-break: break-all;
 }
 
 .copy-hint {
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 11px;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: var(--ash);
+    color: #c8c0b8;
     flex-shrink: 0;
     opacity: 0.6;
     transition: opacity 0.15s, color 0.15s;
@@ -225,16 +225,16 @@ function copyUrl() {
 
 .code-scroll:hover .copy-hint {
     opacity: 1;
-    color: var(--ember);
+    color: #ff6b35;
 }
 
 .note-text {
     font-size: 13px;
-    color: var(--ash);
+    color: #c8c0b8;
     font-style: italic;
     margin: 0;
     padding: 10px 14px;
-    border-left: 3px solid var(--blood-red);
+    border-left: 3px solid #8b0000;
     background: rgba(139, 0, 0, 0.08);
     border-radius: 0 3px 3px 0;
     line-height: 1.5;

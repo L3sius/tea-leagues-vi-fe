@@ -92,17 +92,17 @@ function closeLightbox() { lightboxEntry.value = null }
 }
 
 .section-title {
-    font-family: var(--font-heading);
+    font-family: 'Cinzel Decorative', 'Cinzel', serif;
     font-size: 29px;
     font-weight: 700;
-    color: var(--soul-gold);
+    color: #ffd070;
     letter-spacing: 2px;
     text-shadow: 0 0 12px rgba(255, 179, 71, 0.4);
 }
 
 .section-subtitle {
     font-size: 21px;
-    color: var(--ash);
+    color: #c8c0b8;
     letter-spacing: 2px;
     text-transform: uppercase;
     font-style: italic;
@@ -118,9 +118,9 @@ function closeLightbox() { lightboxEntry.value = null }
 /* ── Painting frame card ── */
 .painting-frame {
     position: relative;
-    background: var(--panel-bg);
-    border: 2px solid var(--panel-border);
-    border-radius: var(--radius-md);
+    background: rgba(18, 2, 2, 0.92);
+    border: 2px solid rgba(139, 0, 0, 0.55);
+    border-radius: 6px;
     box-shadow:
         0 0 0 1px rgba(80, 10, 10, 0.5) inset,
         0 0 0 4px rgba(18, 2, 2, 0.9) inset,
@@ -158,7 +158,7 @@ function closeLightbox() { lightboxEntry.value = null }
 .frame-corner {
     position: absolute;
     font-size: 8px;
-    color: var(--blood-red);
+    color: #8b0000;
     opacity: 0.65;
     line-height: 1;
     pointer-events: none;
@@ -170,7 +170,7 @@ function closeLightbox() { lightboxEntry.value = null }
 .frame-corner--br { bottom: 4px; right: 6px; }
 
 .painting-frame--done .frame-corner {
-    color: var(--ember);
+    color: #ff6b35;
     opacity: 0.8;
 }
 
@@ -225,10 +225,10 @@ function closeLightbox() { lightboxEntry.value = null }
 }
 
 .placeholder-text {
-    font-family: var(--font-body);
+    font-family: 'IM Fell English', Georgia, serif;
     font-size: 11px;
     font-style: italic;
-    color: var(--ash);
+    color: #c8c0b8;
     opacity: 0.55;
     text-align: center;
     letter-spacing: 0.5px;
@@ -256,13 +256,13 @@ function closeLightbox() { lightboxEntry.value = null }
 }
 
 .indicator--done {
-    color: var(--ember);
+    color: #ff6b35;
     text-shadow: 0 0 8px rgba(255, 107, 53, 0.8), 0 0 16px rgba(255, 107, 53, 0.4);
     animation: emberGlow 2.4s ease-in-out infinite;
 }
 
 .indicator--locked {
-    color: var(--ash);
+    color: #c8c0b8;
     opacity: 0.35;
     font-size: 14px;
 }
@@ -279,10 +279,10 @@ function closeLightbox() { lightboxEntry.value = null }
 }
 
 .frame-title {
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 12px;
     font-weight: 700;
-    color: var(--soul-gold);
+    color: #ffd070;
     letter-spacing: 0.8px;
     text-transform: uppercase;
     line-height: 1.3;
@@ -291,10 +291,10 @@ function closeLightbox() { lightboxEntry.value = null }
 }
 
 .frame-desc {
-    font-family: var(--font-body);
+    font-family: 'IM Fell English', Georgia, serif;
     font-size: 11px;
     font-style: italic;
-    color: var(--ash);
+    color: #c8c0b8;
     line-height: 1.45;
     letter-spacing: 0.2px;
 }
@@ -341,10 +341,10 @@ function closeLightbox() { lightboxEntry.value = null }
 }
 
 .lightbox-title {
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 18px;
     font-weight: 700;
-    color: var(--soul-gold);
+    color: #ffd070;
     letter-spacing: 2px;
     text-transform: uppercase;
     text-shadow: 0 0 12px rgba(255, 179, 71, 0.5);
@@ -352,10 +352,10 @@ function closeLightbox() { lightboxEntry.value = null }
 }
 
 .lightbox-desc {
-    font-family: var(--font-body);
+    font-family: 'IM Fell English', Georgia, serif;
     font-size: 14px;
     font-style: italic;
-    color: var(--ash);
+    color: #c8c0b8;
     letter-spacing: 0.5px;
     margin: 0;
     line-height: 1.5;

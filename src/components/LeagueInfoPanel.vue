@@ -220,10 +220,10 @@ function toggleRegion(key) {
 }
 
 .section-title {
-    font-family: var(--font-heading);
+    font-family: 'Cinzel Decorative', 'Cinzel', serif;
     font-size: 29px;
     font-weight: 700;
-    color: var(--soul-gold);
+    color: #ffd070;
     letter-spacing: 2px;
     text-shadow: 0 0 12px rgba(255, 179, 71, 0.4);
 }
@@ -233,7 +233,7 @@ function toggleRegion(key) {
     background: none;
     border: 1px solid rgba(139, 0, 0, 0.45);
     border-radius: 3px;
-    color: var(--ash);
+    color: #c8c0b8;
     font-size: 18px;
     width: 28px;
     height: 28px;
@@ -246,8 +246,8 @@ function toggleRegion(key) {
 }
 
 .refresh-btn:hover {
-    color: var(--ember);
-    border-color: var(--ember);
+    color: #ff6b35;
+    border-color: #ff6b35;
 }
 
 .refresh-btn--spinning {
@@ -261,7 +261,7 @@ function toggleRegion(key) {
 
 .section-subtitle {
     font-size: 21px;
-    color: var(--ash);
+    color: #c8c0b8;
     letter-spacing: 2px;
     text-transform: uppercase;
     font-style: italic;
@@ -279,16 +279,16 @@ function toggleRegion(key) {
     border: 1px solid rgba(139, 0, 0, 0.5);
     border-radius: 3px;
     padding: 9px 14px;
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 15px;
-    color: var(--bone);
+    color: #f0ece4;
     letter-spacing: 0.5px;
     outline: none;
     transition: border-color 0.15s;
 }
 
 .search-input::placeholder {
-    color: var(--ash);
+    color: #c8c0b8;
     opacity: 0.6;
 }
 
@@ -311,16 +311,16 @@ function toggleRegion(key) {
 
 .search-option {
     padding: 9px 14px;
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 15px;
-    color: var(--bone);
+    color: #f0ece4;
     cursor: pointer;
     transition: background 0.12s;
 }
 
 .search-option:hover {
     background: rgba(139, 0, 0, 0.25);
-    color: var(--soul-gold);
+    color: #ffd070;
 }
 
 /* ── Region filter ── */
@@ -385,16 +385,16 @@ function toggleRegion(key) {
     border: 1px solid rgba(139, 0, 0, 0.5);
     border-radius: 3px;
     padding: 3px 8px;
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 13px;
-    color: var(--ember);
+    color: #ff6b35;
     letter-spacing: 0.5px;
 }
 
 .clear-tag {
     background: none;
     border: none;
-    color: var(--ash);
+    color: #c8c0b8;
     cursor: pointer;
     padding: 0;
     font-size: 11px;
@@ -403,13 +403,13 @@ function toggleRegion(key) {
 }
 
 .clear-tag:hover {
-    color: var(--ember);
+    color: #ff6b35;
 }
 
 .result-count {
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 13px;
-    color: var(--ash);
+    color: #c8c0b8;
     margin-left: auto;
 }
 
@@ -422,7 +422,7 @@ function toggleRegion(key) {
 
 .no-results {
     font-size: 16px;
-    color: var(--ash);
+    color: #c8c0b8;
     font-style: italic;
     text-align: center;
     padding: 24px 0;
@@ -436,10 +436,10 @@ function toggleRegion(key) {
 }
 
 .card-name {
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 20px;
     font-weight: 700;
-    color: var(--soul-gold);
+    color: #ffd070;
     letter-spacing: 1px;
     text-shadow: 0 0 8px rgba(255, 179, 71, 0.3);
     border-bottom: 1px solid rgba(139, 0, 0, 0.3);
@@ -465,16 +465,16 @@ function toggleRegion(key) {
 }
 
 .relic-tier {
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 13px;
-    color: var(--ember);
+    color: #ff6b35;
     letter-spacing: 1px;
     line-height: 1;
 }
 
 .relic-name {
     font-size: 13px;
-    color: var(--bone);
+    color: #f0ece4;
     text-align: center;
     line-height: 1.3;
     word-break: break-word;
@@ -489,11 +489,11 @@ function toggleRegion(key) {
 }
 
 .combat-label {
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 11px;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: var(--ash);
+    color: #c8c0b8;
     flex-shrink: 0;
 }
 
@@ -504,7 +504,7 @@ function toggleRegion(key) {
 }
 
 .combat-badge {
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.8px;

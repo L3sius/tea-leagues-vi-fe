@@ -124,17 +124,17 @@ function badgeClass(p) {
 }
 
 .section-title {
-    font-family: var(--font-heading);
+    font-family: 'Cinzel Decorative', 'Cinzel', serif;
     font-size: 29px;
     font-weight: 700;
-    color: var(--soul-gold);
+    color: #ffd070;
     letter-spacing: 2px;
     text-shadow: 0 0 12px rgba(255, 179, 71, 0.4);
 }
 
 .section-subtitle {
     font-size: 21px;
-    color: var(--ash);
+    color: #c8c0b8;
     letter-spacing: 2px;
     text-transform: uppercase;
     font-style: italic;
@@ -155,16 +155,16 @@ function badgeClass(p) {
 
 .overall-label {
     font-size: 18px;
-    color: var(--ash);
+    color: #c8c0b8;
     letter-spacing: 1.5px;
     text-transform: uppercase;
 }
 
 .overall-pct {
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 30px;
     font-weight: 700;
-    color: var(--ember);
+    color: #ff6b35;
     line-height: 1;
     text-shadow: 0 0 10px rgba(255, 107, 53, 0.4);
 }
@@ -195,15 +195,15 @@ function badgeClass(p) {
 }
 
 .completed-num {
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 30px;
     font-weight: 700;
-    color: var(--sulfur);
+    color: #ffd700;
 }
 
 .completed-label {
     font-size: 21px;
-    color: var(--ash);
+    color: #c8c0b8;
 }
 
 .milestones-list {
@@ -246,26 +246,26 @@ function badgeClass(p) {
 }
 
 .ms-title {
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 21px;
     font-weight: 700;
-    color: var(--bone);
+    color: #f0ece4;
     letter-spacing: 0.5px;
 }
 
 .is-complete .ms-title {
-    color: var(--soul-gold);
+    color: #ffd070;
 }
 
 .ms-detail {
     font-size: 19px;
-    color: var(--ash);
+    color: #c8c0b8;
     font-style: italic;
     text-align: left;
 }
 
 .ms-badge {
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 18px;
     font-weight: 700;
     letter-spacing: 1px;
@@ -277,25 +277,25 @@ function badgeClass(p) {
 .badge--low {
     background: rgba(139, 0, 0, 0.2);
     border: 1px solid rgba(139, 0, 0, 0.4);
-    color: var(--ash);
+    color: #c8c0b8;
 }
 
 .badge--mid {
     background: rgba(192, 57, 43, 0.2);
     border: 1px solid rgba(192, 57, 43, 0.4);
-    color: var(--crimson);
+    color: #c0392b;
 }
 
 .badge--high {
     background: rgba(255, 107, 53, 0.15);
     border: 1px solid rgba(255, 107, 53, 0.4);
-    color: var(--ember);
+    color: #ff6b35;
 }
 
 .badge--complete {
     background: rgba(255, 215, 0, 0.12);
     border: 1px solid rgba(255, 215, 0, 0.5);
-    color: var(--sulfur);
+    color: #ffd700;
 }
 
 .ms-bar-track {
@@ -339,17 +339,17 @@ function badgeClass(p) {
 
 .ms-remaining {
     font-size: 17px;
-    color: var(--ash);
+    color: #c8c0b8;
     font-style: italic;
 }
 
 .complete-text {
-    color: var(--soul-gold);
+    color: #ffd070;
 }
 
 .ms-leader {
     font-size: 17px;
-    color: var(--ash);
-    font-family: var(--font-subhead);
+    color: #c8c0b8;
+    font-family: 'Cinzel', serif;
 }
 </style>

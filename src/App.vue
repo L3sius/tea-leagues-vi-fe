@@ -145,7 +145,7 @@ body,
   overflow-x: hidden;
   padding: 28px 20px 60px;
   scrollbar-width: thin;
-  scrollbar-color: var(--blood-red) transparent;
+  scrollbar-color: #8b0000 transparent;
 }
 
 .side-left {
@@ -201,14 +201,15 @@ body,
 }
 
 .toggle-btn {
-  font-family: var(--font-subhead);
+  font-family: 'Cinzel', serif;
   font-size: 15px;
+  font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--ash);
+  color: #e8e0d4;
   background: rgba(18, 2, 2, 0.75);
   border: 1px solid rgba(139, 0, 0, 0.45);
-  border-radius: var(--radius-md);
+  border-radius: 6px;
   padding: 12px 16px;
   cursor: pointer;
   transition: all 0.2s;
@@ -225,16 +226,16 @@ body,
 }
 
 .toggle-btn:hover {
-  color: var(--ember);
-  border-color: var(--blood-red);
+  color: #ff6b35;
+  border-color: #8b0000;
   background: rgba(139, 0, 0, 0.2);
   box-shadow: 0 0 16px rgba(139, 0, 0, 0.3);
 }
 
 .toggle-btn--active {
-  color: var(--soul-gold);
+  color: #ffd070;
   background: rgba(139, 0, 0, 0.35);
-  border-color: var(--crimson);
+  border-color: #c0392b;
   box-shadow:
     0 0 20px rgba(139, 0, 0, 0.45),
     inset 0 1px 0 rgba(255, 107, 53, 0.15);
@@ -248,8 +249,8 @@ body,
   left: 10%;
   right: 10%;
   height: 2px;
-  background: linear-gradient(90deg, transparent, var(--ember), transparent);
-  box-shadow: 0 0 8px var(--ember);
+  background: linear-gradient(90deg, transparent, #ff6b35, transparent);
+  box-shadow: 0 0 8px #ff6b35;
 }
 
 @media (max-width: 768px) {

@@ -116,17 +116,17 @@ function barWidth(val, key) {
 }
 
 .section-title {
-    font-family: var(--font-heading);
+    font-family: 'Cinzel Decorative', 'Cinzel', serif;
     font-size: 29px;
     font-weight: 700;
-    color: var(--soul-gold);
+    color: #ffd070;
     letter-spacing: 2px;
     text-shadow: 0 0 12px rgba(255, 179, 71, 0.4);
 }
 
 .section-subtitle {
     font-size: 21px;
-    color: var(--ash);
+    color: #c8c0b8;
     letter-spacing: 2px;
     text-transform: uppercase;
     font-style: italic;
@@ -176,26 +176,26 @@ function barWidth(val, key) {
 }
 
 .card-label {
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 19px;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: var(--ash);
+    color: #c8c0b8;
     white-space: nowrap;
 }
 
 .card-total {
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 30px;
     font-weight: 700;
-    color: var(--soul-gold);
+    color: #ffd070;
     line-height: 1;
     text-shadow: 0 0 8px rgba(255, 179, 71, 0.3);
     white-space: nowrap;
 }
 
 .total--bad {
-    color: var(--crimson);
+    color: #c0392b;
     text-shadow: 0 0 8px rgba(192, 57, 43, 0.35);
 }
 
@@ -207,9 +207,9 @@ function barWidth(val, key) {
 }
 
 .card-leader {
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 19px;
-    color: var(--ash);
+    color: #c8c0b8;
     white-space: nowrap;
     display: flex;
     align-items: center;
@@ -217,7 +217,7 @@ function barWidth(val, key) {
 }
 
 .leader-val {
-    color: var(--ember);
+    color: #ff6b35;
     font-weight: 600;
 }
 
@@ -241,7 +241,7 @@ function barWidth(val, key) {
 }
 
 .expand-chevron {
-    color: var(--ash);
+    color: #c8c0b8;
     font-size: 19px;
     line-height: 1;
     transition: transform 0.25s ease;
@@ -263,7 +263,7 @@ function barWidth(val, key) {
     max-height: 260px;
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: var(--blood-red) transparent;
+    scrollbar-color: #8b0000 transparent;
     padding-right: 12px;
 }
 
@@ -281,9 +281,9 @@ function barWidth(val, key) {
 
 
 .lb-pos {
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 19px;
-    color: var(--ash);
+    color: #c8c0b8;
     width: 18px;
     text-align: right;
     flex-shrink: 0;
@@ -291,7 +291,7 @@ function barWidth(val, key) {
 
 
 .lb-name {
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 21px;
     width: 130px;
     flex-shrink: 0;
@@ -311,13 +311,13 @@ function barWidth(val, key) {
 .lb-bar {
     height: 100%;
     border-radius: 3px;
-    background: linear-gradient(90deg, var(--blood-red), var(--crimson));
+    background: linear-gradient(90deg, #8b0000, #c0392b);
     transition: width 0.9s ease;
 }
 
 
 .lb-bar--bad {
-    background: linear-gradient(90deg, #5a0000, var(--crimson));
+    background: linear-gradient(90deg, #5a0000, #c0392b);
 }
 
 .lb-bar--rest {
@@ -325,27 +325,27 @@ function barWidth(val, key) {
 }
 
 .lb-val {
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 21px;
     font-weight: 600;
-    color: var(--soul-gold);
+    color: #ffd070;
     flex-shrink: 0;
     min-width: 44px;
     text-align: right;
 }
 
 .lb-val--bad {
-    color: var(--crimson);
+    color: #c0392b;
 }
 
 .lb-val--dim {
-    color: var(--ash);
+    color: #c8c0b8;
     font-weight: 400;
 }
 
 /* ── League Points rank badges ── */
 .lb-rank-badge {
-    font-family: var(--font-subhead);
+    font-family: 'Cinzel', serif;
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 1px;
@@ -358,7 +358,7 @@ function barWidth(val, key) {
 }
 
 .lb-rank-badge--none {
-    color: var(--ash);
+    color: #c8c0b8;
     border-color: transparent;
     opacity: 0.3;
 }
