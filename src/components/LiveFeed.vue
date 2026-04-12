@@ -410,9 +410,10 @@ onUnmounted(() => eventSource?.close())
 .faq-btn {
     font-family: 'Cinzel', serif;
     font-size: 11px;
+    font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: #c8c0b8;
+    color: #e8e0d4;
     background: rgba(139, 0, 0, 0.12);
     border: 1px solid rgba(139, 0, 0, 0.35);
     border-radius: 3px;
