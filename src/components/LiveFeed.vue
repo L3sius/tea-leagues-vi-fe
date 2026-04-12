@@ -28,13 +28,19 @@
                     <div v-for="event in events" :key="event.id" class="event-row"
                         :class="[`event-type--${event.type}`, { 'event--fail': !event.isSuccess }]">
                         <span class="event-time">{{ event.time }}</span>
-                        <span class="event-player">{{ event.player }}</span>
+                        <span class="event-player" :title="event.player">{{ event.player }}</span>
                         <span v-if="event.lootSource" class="event-message loot-source"
                             :class="{ 'clue-source': event.type === 'clue' }"
+                            :title="event.lootItems ? `${event.lootSource} — ${event.lootItems}` : event.lootSource"
                             @mouseenter="showTooltip($event, event.lootItems)" @mouseleave="hideTooltip">
                             {{ event.lootSource }}
                         </span>
-                        <span v-else class="event-message">{{ event.message }}</span>
+                        <span v-else class="event-message" :title="event.message">{{ event.message }}</span>
+                        <span v-for="t in event.tiers" :key="t"
+                            class="tier-badge"
+                            :style="{ color: tierColor(t), borderColor: tierColor(t) }">
+                            T{{ t }}
+                        </span>
                     </div>
                 </TransitionGroup>
             </div>
@@ -141,7 +147,18 @@ const TYPE_MAP = {
     'KILL_COUNT': 'kill',
 }
 
+function stripDashes(str) {
+    return str
+        .split(',')
+        .map(s => s.trim())
+        .filter(s => !/^-+$/.test(s))
+        .join(', ')
+}
+
 function parseMessage(raw, isSuccess) {
+    // Remove dash-only segments from the raw string before tokenising
+    raw = raw.replace(/\[-+\]/g, '').replace(/-{3,}/g, '').trim()
+
     const bracketRe = /\[([^\]]+)\]/g
     const tokens = []
     let match
@@ -161,7 +178,7 @@ function parseMessage(raw, isSuccess) {
 
     if (rawType === 'LOOT') {
         lootSource = tokens[2] ?? 'Unknown'
-        lootItems = tokens[3] ?? ''
+        lootItems = stripDashes(tokens[3] ?? '')
         message = lootSource
     } else if (rawType === 'CLUE') {
         // Extract tier from "completed a [hard](...) clue"
@@ -224,6 +241,9 @@ function parseMessage(raw, isSuccess) {
             : raw.replace(/\[[^\]]+\]/g, '').trim()
     }
 
+    // Strip separator lines (e.g. "----------")
+    message = message.replace(/^-+$/, '').trim()
+
     return { player, type: mapped, message, isSuccess, lootSource, lootItems }
 }
 
@@ -231,6 +251,20 @@ function formatTime(timestamp) {
     const date = new Date(timestamp * 1000)
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
 }
+
+const TIER_COLORS = {
+    1: '#314059',
+    2: '#256F6C',
+    3: '#08AD55',
+    4: '#8FEC00',
+    5: '#FFE100',
+    6: '#FFB300',
+    7: '#FF6314',
+    8: '#FF141A',
+    9: '#FF1477',
+}
+
+function tierColor(tier) { return TIER_COLORS[tier] ?? '#c8c0b8' }
 
 function addEvent(data, prepend = true) {
     const parsed = parseMessage(data.message, data.is_success_action ?? true)
@@ -243,6 +277,7 @@ function addEvent(data, prepend = true) {
         isSuccess: parsed.isSuccess,
         lootSource: parsed.lootSource ?? null,
         lootItems: parsed.lootItems ?? null,
+        tiers: data.tier != null ? [].concat(data.tier) : [],
     }
     // Always track the latest per type (only successful events)
     if (entry.isSuccess) {
@@ -631,6 +666,10 @@ onUnmounted(() => eventSource?.close())
     font-weight: 600;
     color: #ff6b35;
     flex-shrink: 0;
+    width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .event-message {
@@ -639,6 +678,18 @@ onUnmounted(() => eventSource?.close())
     overflow: hidden;
     text-overflow: ellipsis;
     flex: 1;
+}
+
+.tier-badge {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 1px 5px;
+    border-radius: 3px;
+    border: 1px solid currentColor;
+    flex-shrink: 0;
+    opacity: 0.95;
 }
 
 /* Empty / disconnected state */
@@ -696,13 +747,11 @@ onUnmounted(() => eventSource?.close())
     position: relative;
     cursor: help;
     color: #ffd070;
-    border-bottom: 1px dashed rgba(255, 179, 71, 0.4);
     text-decoration: none;
 }
 
 .loot-source:hover {
     color: #ffd700;
-    border-bottom-color: #ffd700;
 }
 
 .loot-tooltip {

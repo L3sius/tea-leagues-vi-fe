@@ -134,7 +134,7 @@ body,
   position: fixed;
   inset: 0;
   display: grid;
-  grid-template-columns: 500px 1fr 540px;
+  grid-template-columns: 560px 1fr 540px;
   z-index: 1;
 }
 
