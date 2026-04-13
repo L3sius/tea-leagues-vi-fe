@@ -33,7 +33,7 @@
                             :class="{ 'clue-source': event.type === 'clue' }"
                             :title="event.lootItems ? `${event.lootSource} — ${event.lootItems}` : event.lootSource"
                             @mouseenter="showTooltip($event, event.lootItems)" @mouseleave="hideTooltip">
-                            {{ event.type === 'drop' ? `Got loot from: ${event.lootSource}` : event.lootSource }}
+                            {{ event.type === 'drop' ? `Looted: ${event.lootSource}` : event.lootSource }}
                         </span>
                         <span v-else class="event-message" :title="event.message">{{ event.message }}</span>
                         <div v-if="event.type === 'drop'" class="tier-badges">
@@ -64,9 +64,9 @@
                     :class="`event-type--${entry.type}`">
                     <span class="latest-type-label">{{ entry.typeLabel }}</span>
                     <div class="latest-content">
+                        <span class="latest-time">{{ entry.time }}</span>
                         <span class="latest-player">{{ entry.player }}</span>
                         <span class="latest-message">{{ entry.shortMessage }}</span>
-                        <span class="latest-time">{{ entry.time }}</span>
                     </div>
                 </div>
             </div>
@@ -106,7 +106,7 @@ const TYPE_LABELS = {
     kill: 'Kill Count',
 }
 
-const PREFIXES = ['Got loot from: ', 'Conquered: ']
+const PREFIXES = ['Looted: ', 'Conquered: ']
 
 function stripPrefix(msg) {
     for (const p of PREFIXES) {
@@ -289,9 +289,12 @@ function addEvent(data, prepend = true) {
         lootItems: parsed.lootItems ?? null,
         tiers: data.tier != null ? [].concat(data.tier) : [],
     }
-    // Always track the latest per type (only successful events)
+    // Track the latest per type — only overwrite if this event is newer
     if (entry.isSuccess) {
-        latest.value[entry.type] = entry
+        const existing = latest.value[entry.type]
+        if (!existing || data.timestamp >= (existing._timestamp ?? 0)) {
+            latest.value[entry.type] = { ...entry, _timestamp: data.timestamp }
+        }
     }
 
     if (prepend) {
@@ -556,6 +559,10 @@ onUnmounted(() => eventSource?.close())
     font-weight: 600;
     color: #ff6b35;
     flex-shrink: 0;
+    width: 12ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .latest-message {
@@ -564,6 +571,7 @@ onUnmounted(() => eventSource?.close())
     opacity: 0.85;
     flex: 1;
     overflow: hidden;
+    text-align: left;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
@@ -676,7 +684,7 @@ onUnmounted(() => eventSource?.close())
     font-weight: 600;
     color: #ff6b35;
     flex-shrink: 0;
-    width: 140px;
+    width: 12ch;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

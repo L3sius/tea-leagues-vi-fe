@@ -74,18 +74,25 @@ function getRank(points) { return RANK_TIERS.find(t => points >= t.min) ?? null 
 const expanded = reactive({})
 function toggle(key) { expanded[key] = !expanded[key] }
 
+function fmtNum(v) {
+    if (v >= 1_000_000_000) return `${(v / 1_000_000_000).toFixed(2)}B`
+    if (v >= 1_000_000) return `${(v / 1_000_000).toFixed(1)}M`
+    if (v >= 1_000) return `${(v / 1_000).toFixed(0)}K`
+    return `${v}`
+}
+
 const trackers = [
-    { key: 'gpEarned', label: 'GP Earned', format: v => v >= 1_000_000_000 ? `${(v / 1_000_000_000).toFixed(2)}B` : v >= 1_000_000 ? `${(v / 1_000_000).toFixed(1)}M` : v >= 1_000 ? `${(v / 1_000).toFixed(0)}K` : `${v}` },
-    { key: 'itemsReceived', label: 'Items Received', format: v => v.toLocaleString() },
-    { key: 'levelsEarned', label: 'Levels Earned', format: v => v.toLocaleString() },
-    { key: 'petsEarned', label: 'Pets Earned', format: v => v.toString() },
-    { key: 'deaths', label: 'Deaths', format: v => v.toLocaleString() },
-    { key: 'clogsEarned', label: 'Clog Slots', format: v => v.toLocaleString() },
-    { key: 'combatTasks', label: 'Combat Tasks', format: v => v.toLocaleString() },
-    { key: 'clueScrolls', label: 'Clue Scrolls', format: v => v.toLocaleString() },
-    { key: 'killCount', label: 'Kill Count', format: v => v.toLocaleString() },
-    { key: 'leagueTasks', label: 'League Tasks', format: v => v.toLocaleString() },
-    { key: 'leaguePoints', label: 'League Points', format: v => v.toLocaleString() },
+    { key: 'gpEarned', label: 'GP Earned', format: fmtNum },
+    { key: 'itemsReceived', label: 'Items Received', format: fmtNum },
+    { key: 'levelsEarned', label: 'Levels Earned', format: fmtNum },
+    { key: 'petsEarned', label: 'Pets Earned', format: fmtNum },
+    { key: 'deaths', label: 'Deaths', format: fmtNum },
+    { key: 'clogsEarned', label: 'Clog Slots', format: fmtNum },
+    { key: 'combatTasks', label: 'Combat Tasks', format: fmtNum },
+    { key: 'clueScrolls', label: 'Clue Scrolls', format: fmtNum },
+    { key: 'killCount', label: 'Kill Count', format: fmtNum },
+    { key: 'leagueTasks', label: 'League Tasks', format: fmtNum },
+    { key: 'leaguePoints', label: 'League Points', format: fmtNum },
 ]
 
 function sorted(key) { return [...players.value].sort((a, b) => b[key] - a[key]) }
@@ -197,7 +204,9 @@ function barWidth(val, key) {
     display: flex;
     align-items: center;
     gap: 12px;
-    flex-shrink: 0;
+    flex-shrink: 1;
+    min-width: 0;
+    overflow: hidden;
 }
 
 .card-leader {
@@ -208,6 +217,8 @@ function barWidth(val, key) {
     display: flex;
     align-items: center;
     gap: 6px;
+    overflow: hidden;
+    min-width: 0;
 }
 
 .leader-val {
