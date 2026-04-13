@@ -26,7 +26,8 @@
 
                 <div class="ms-header">
                     <div class="ms-title-group">
-                        <span class="ms-title"><span class="ms-progress">{{ ms.formatCurrent(ms.current) }}/{{ ms.formatGoal(ms.goal) }}</span> {{ ms.label }}</span>
+                        <span class="ms-title"><span class="ms-progress">{{ ms.formatCurrent(ms.current) }}/{{
+                                ms.formatGoal(ms.goal) }}</span> {{ ms.label }}</span>
                     </div>
                     <div class="ms-badge" :class="badgeClass(ms.pct)">
                         {{ ms.pct >= 100 ? 'DONE' : ms.pct + '%' }}
@@ -61,9 +62,9 @@ function topPlayer(key) { return [...players.value].sort((a, b) => (b[key] || 0)
 function pct(current, goal) { return Math.min(Math.floor((current / goal) * 100), 100) }
 function barWidth(current, goal) { return Math.min((current / goal) * 100, 100) }
 function fmtGP(v) {
-    if (v >= 1_000_000_000) return `${(v / 1_000_000_000).toFixed(1)}B`
-    if (v >= 1_000_000) return `${(v / 1_000_000).toFixed(1)}M`
-    if (v >= 1_000) return `${(v / 1_000).toFixed(0)}K`
+    if (v >= 1_000_000_000) return `${parseFloat((v / 1_000_000_000).toFixed(2))}B`
+    if (v >= 1_000_000) return `${parseFloat((v / 1_000_000).toFixed(1))}M`
+    if (v >= 1_000) return `${parseFloat((v / 1_000).toFixed(1))}K`
     return v.toString()
 }
 function fmtNum(v) { return v.toLocaleString() }
@@ -73,10 +74,10 @@ const GOALS = {
     gpEarned: 5000000000,
     itemsReceived: 1000000,
     levelsEarned: 100000,
-    petsEarned: 1,
-    clogsEarned: 1,
-    combatTasks: 1,
-    clueScrolls: 1,
+    petsEarned: 250,
+    clogsEarned: 33333,
+    combatTasks: 8500,
+    clueScrolls: 20000,
     killCount: 50000,
     leagueTasks: 1,
     leaguePoints: 1,
@@ -84,16 +85,16 @@ const GOALS = {
 // ────────────────────────────────────────────────────────────────────────────
 
 const milestones = computed(() => [
-    { key: 'gpEarned',      label: 'GP Earned',        goal: GOALS.gpEarned,      current: clanSum('gpEarned'),      formatCurrent: fmtGP,  formatGoal: fmtGP,  pct: pct(clanSum('gpEarned'),      GOALS.gpEarned),      barWidth: barWidth(clanSum('gpEarned'),      GOALS.gpEarned),      leader: topPlayer('gpEarned') },
-    { key: 'itemsReceived', label: 'Items Received',    goal: GOALS.itemsReceived, current: clanSum('itemsReceived'), formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('itemsReceived'), GOALS.itemsReceived), barWidth: barWidth(clanSum('itemsReceived'), GOALS.itemsReceived), leader: topPlayer('itemsReceived') },
-    { key: 'levelsEarned',  label: 'Levels Earned',     goal: GOALS.levelsEarned,  current: clanSum('levelsEarned'),  formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('levelsEarned'),  GOALS.levelsEarned),  barWidth: barWidth(clanSum('levelsEarned'),  GOALS.levelsEarned),  leader: topPlayer('levelsEarned') },
-    { key: 'petsEarned',    label: 'Pets Received',     goal: GOALS.petsEarned,    current: clanSum('petsEarned'),    formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('petsEarned'),    GOALS.petsEarned),    barWidth: barWidth(clanSum('petsEarned'),    GOALS.petsEarned),    leader: topPlayer('petsEarned') },
-    { key: 'clogsEarned',   label: 'Clog Slots',        goal: GOALS.clogsEarned,   current: clanSum('clogsEarned'),   formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('clogsEarned'),   GOALS.clogsEarned),   barWidth: barWidth(clanSum('clogsEarned'),   GOALS.clogsEarned),   leader: topPlayer('clogsEarned') },
-    { key: 'combatTasks',   label: 'Combat Tasks',      goal: GOALS.combatTasks,   current: clanSum('combatTasks'),   formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('combatTasks'),   GOALS.combatTasks),   barWidth: barWidth(clanSum('combatTasks'),   GOALS.combatTasks),   leader: topPlayer('combatTasks') },
-    { key: 'clueScrolls',   label: 'Clue Scrolls',      goal: GOALS.clueScrolls,   current: clanSum('clueScrolls'),   formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('clueScrolls'),   GOALS.clueScrolls),   barWidth: barWidth(clanSum('clueScrolls'),   GOALS.clueScrolls),   leader: topPlayer('clueScrolls') },
-    { key: 'killCount',     label: 'Bosses Killed',     goal: GOALS.killCount,     current: clanSum('killCount'),     formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('killCount'),     GOALS.killCount),     barWidth: barWidth(clanSum('killCount'),     GOALS.killCount),     leader: topPlayer('killCount') },
-    { key: 'leagueTasks',   label: 'Tasks Completed',   goal: GOALS.leagueTasks,   current: clanSum('leagueTasks'),   formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('leagueTasks'),   GOALS.leagueTasks),   barWidth: barWidth(clanSum('leagueTasks'),   GOALS.leagueTasks),   leader: topPlayer('leagueTasks') },
-    { key: 'leaguePoints',  label: 'League Points',     goal: GOALS.leaguePoints,  current: clanSum('leaguePoints'),  formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('leaguePoints'),  GOALS.leaguePoints),  barWidth: barWidth(clanSum('leaguePoints'),  GOALS.leaguePoints),  leader: topPlayer('leaguePoints') },
+    { key: 'gpEarned', label: 'GP Earned', goal: GOALS.gpEarned, current: clanSum('gpEarned'), formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('gpEarned'), GOALS.gpEarned), barWidth: barWidth(clanSum('gpEarned'), GOALS.gpEarned), leader: topPlayer('gpEarned') },
+    { key: 'itemsReceived', label: 'Items Received', goal: GOALS.itemsReceived, current: clanSum('itemsReceived'), formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('itemsReceived'), GOALS.itemsReceived), barWidth: barWidth(clanSum('itemsReceived'), GOALS.itemsReceived), leader: topPlayer('itemsReceived') },
+    { key: 'levelsEarned', label: 'Levels Earned', goal: GOALS.levelsEarned, current: clanSum('levelsEarned'), formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('levelsEarned'), GOALS.levelsEarned), barWidth: barWidth(clanSum('levelsEarned'), GOALS.levelsEarned), leader: topPlayer('levelsEarned') },
+    { key: 'petsEarned', label: 'Pets Received', goal: GOALS.petsEarned, current: clanSum('petsEarned'), formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('petsEarned'), GOALS.petsEarned), barWidth: barWidth(clanSum('petsEarned'), GOALS.petsEarned), leader: topPlayer('petsEarned') },
+    { key: 'clogsEarned', label: 'Clog Slots', goal: GOALS.clogsEarned, current: clanSum('clogsEarned'), formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('clogsEarned'), GOALS.clogsEarned), barWidth: barWidth(clanSum('clogsEarned'), GOALS.clogsEarned), leader: topPlayer('clogsEarned') },
+    { key: 'combatTasks', label: 'Combat Tasks', goal: GOALS.combatTasks, current: clanSum('combatTasks'), formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('combatTasks'), GOALS.combatTasks), barWidth: barWidth(clanSum('combatTasks'), GOALS.combatTasks), leader: topPlayer('combatTasks') },
+    { key: 'clueScrolls', label: 'Clue Scrolls', goal: GOALS.clueScrolls, current: clanSum('clueScrolls'), formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('clueScrolls'), GOALS.clueScrolls), barWidth: barWidth(clanSum('clueScrolls'), GOALS.clueScrolls), leader: topPlayer('clueScrolls') },
+    { key: 'killCount', label: 'Bosses Killed', goal: GOALS.killCount, current: clanSum('killCount'), formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('killCount'), GOALS.killCount), barWidth: barWidth(clanSum('killCount'), GOALS.killCount), leader: topPlayer('killCount') },
+    { key: 'leagueTasks', label: 'Tasks Completed', goal: GOALS.leagueTasks, current: clanSum('leagueTasks'), formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('leagueTasks'), GOALS.leagueTasks), barWidth: barWidth(clanSum('leagueTasks'), GOALS.leagueTasks), leader: topPlayer('leagueTasks') },
+    { key: 'leaguePoints', label: 'League Points', goal: GOALS.leaguePoints, current: clanSum('leaguePoints'), formatCurrent: fmtGP, formatGoal: fmtGP, pct: pct(clanSum('leaguePoints'), GOALS.leaguePoints), barWidth: barWidth(clanSum('leaguePoints'), GOALS.leaguePoints), leader: topPlayer('leaguePoints') },
 ])
 
 const completedCount = computed(() => milestones.value.filter(m => m.pct >= 100).length)
