@@ -193,7 +193,8 @@ function parseMessage(raw, isSuccess) {
     } else if (rawType === 'CLUE') {
         // Extract tier from "completed a [hard](...) clue"
         const tierMatch = raw.match(/completed a \[([^\]]+)\]/i)
-        lootSource = tierMatch ? tierMatch[1].charAt(0).toUpperCase() + tierMatch[1].slice(1) : 'Clue'
+        const tier = tierMatch ? tierMatch[1].charAt(0).toUpperCase() + tierMatch[1].slice(1) : 'Clue'
+        lootSource = `Completed ${tier} clue`
 
         // Extract item names from markdown links: [Item name](url) preceded by "X x "
         const itemRe = /\d+ x \[([^\]]+)\]/g
@@ -223,7 +224,7 @@ function parseMessage(raw, isSuccess) {
         const levelMatch = raw.match(/to (\d+)/)
         const skill = skillMatch ? skillMatch[1] : 'a skill'
         const level = levelMatch ? levelMatch[1] : '?'
-        message = `Levelled ${skill} to ${level}`
+        message = `Leveled ${skill} to ${level}`
     } else if (rawType === 'COMBAT_ACHIEVEMENT') {
         const tierMatch = raw.match(/completed (\w+) combat task/i)
         const taskMatch = raw.match(/\[([^\]]+)\]\(http/i)
