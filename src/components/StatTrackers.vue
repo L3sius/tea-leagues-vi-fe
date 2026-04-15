@@ -192,7 +192,7 @@ function barWidth(val, key) {
 
 .card-total {
     font-family: 'Cinzel', serif;
-    font-size: 30px;
+    font-size: 24px;
     font-weight: 700;
     color: #ffd070;
     line-height: 1;
