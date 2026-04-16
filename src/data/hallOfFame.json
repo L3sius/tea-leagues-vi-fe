@@ -17,8 +17,8 @@
     "id": 3,
     "title": "Touched by the Gods",
     "description": "Pull a 3rd age piece from a clue scroll. Statistically shouldn't happen. Yet here we are.",
-    "completed": false,
-    "imageUrl": null
+    "completed": true,
+    "imageUrl": "/halloffame/hollar_3rd_age.png"
   },
   {
     "id": 4,
