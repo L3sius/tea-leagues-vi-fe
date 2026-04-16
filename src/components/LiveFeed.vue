@@ -104,6 +104,7 @@ const TYPE_LABELS = {
     combat: 'Combat Task',
     clue: 'Clue Scroll',
     kill: 'Kill Count',
+    league: 'League Task',
 }
 
 const PREFIXES = ['Looted: ', 'Conquered: ']
@@ -155,6 +156,7 @@ const TYPE_MAP = {
     'COMBAT_ACHIEVEMENT': 'combat',
     'CLUE': 'clue',
     'KILL_COUNT': 'kill',
+    'LEAGUES_TASK': 'league',
 }
 
 function stripDashes(str) {
@@ -240,6 +242,14 @@ function parseMessage(raw, isSuccess) {
         const itemMatch = raw.match(/\[([^\]]+)\]\(https?:\/\//)
         lootSource = 'New collection log item'
         lootItems = itemMatch ? itemMatch[1] : null
+        message = lootSource
+    } else if (rawType === 'LEAGUES_TASK') {
+        // e.g. "... completed a Medium task: [Cook 50 Tuna](url)"
+        const tierMatch = raw.match(/completed a (\w+) task/i)
+        const taskMatch = raw.match(/:\s*\[([^\]]+)\]\(https?:\/\//)
+        const tier = tierMatch ? tierMatch[1].charAt(0).toUpperCase() + tierMatch[1].slice(1) : 'League'
+        lootSource = `Completed ${tier} league task`
+        lootItems = taskMatch ? taskMatch[1] : null
         message = lootSource
     } else if (rawType === 'KILL_COUNT') {
         // Extract monster name from first markdown link: [MonsterName](url)
@@ -671,6 +681,11 @@ onUnmounted(() => eventSource?.close())
     color: #e03030;
 }
 
+.event-type--league {
+    border-left-color: #00d4aa;
+    color: #00d4aa;
+}
+
 .event-time {
     font-size: 13px;
     color: #c8c0b8;
@@ -774,13 +789,12 @@ onUnmounted(() => eventSource?.close())
 .loot-source {
     position: relative;
     cursor: help;
-    color: #ffd070;
     text-decoration: none;
     text-align: left;
 }
 
 .loot-source:hover {
-    color: #ffd700;
+    filter: brightness(1.2);
 }
 
 .loot-tooltip {
