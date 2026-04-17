@@ -27,7 +27,7 @@
                 <div class="ms-header">
                     <div class="ms-title-group">
                         <span class="ms-title"><span class="ms-progress">{{ ms.formatCurrent(ms.current) }}/{{
-                                ms.formatGoal(ms.goal) }}</span> {{ ms.label }}</span>
+                            ms.formatGoal(ms.goal) }}</span> {{ ms.label }}</span>
                     </div>
                     <div class="ms-badge" :class="badgeClass(ms.pct)">
                         {{ ms.pct >= 100 ? 'DONE' : ms.pct + '%' }}
@@ -74,13 +74,13 @@ const GOALS = {
     gpEarned: 5000000000,
     itemsReceived: 1000000,
     levelsEarned: 100000,
-    petsEarned: 250,
+    petsEarned: 50,
     clogsEarned: 33333,
     combatTasks: 8500,
     clueScrolls: 20000,
     killCount: 50000,
-    leagueTasks: 1,
-    leaguePoints: 1,
+    leagueTasks: 30000,
+    leaguePoints: 700000,
 }
 // ────────────────────────────────────────────────────────────────────────────
 
