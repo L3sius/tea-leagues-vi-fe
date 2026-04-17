@@ -74,7 +74,7 @@ const GOALS = {
     gpEarned: 5000000000,
     itemsReceived: 1000000,
     levelsEarned: 100000,
-    petsEarned: 50,
+    petsEarned: 250,
     clogsEarned: 33333,
     combatTasks: 8500,
     clueScrolls: 20000,
