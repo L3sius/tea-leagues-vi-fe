@@ -21,10 +21,10 @@
                             <span class="leader-val">{{ tracker.format(topPlayer(tracker.key)?.[tracker.key] ?? 0)
                                 }}</span>
                         </span>
-                        <button class="expand-btn" :aria-label="expanded[tracker.key] ? 'Collapse' : 'Expand'">
-                            <span class="expand-chevron" :class="{ 'is-open': expanded[tracker.key] }">▾</span>
-                        </button>
                     </div>
+                    <button class="expand-btn" :aria-label="expanded[tracker.key] ? 'Collapse' : 'Expand'">
+                        <span class="expand-chevron" :class="{ 'is-open': expanded[tracker.key] }">▾</span>
+                    </button>
                 </div>
 
                 <Transition name="expand">
@@ -157,7 +157,6 @@ function barWidth(val, key) {
 .card-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     padding: 13px 16px 11px;
     cursor: pointer;
     user-select: none;
@@ -178,7 +177,7 @@ function barWidth(val, key) {
     display: flex;
     align-items: baseline;
     gap: 12px;
-    min-width: 0;
+    flex: 0 0 auto;
 }
 
 .card-label {
@@ -203,8 +202,8 @@ function barWidth(val, key) {
 .card-meta {
     display: flex;
     align-items: center;
-    gap: 12px;
-    flex-shrink: 1;
+    justify-content: flex-end;
+    flex: 1 1 0;
     min-width: 0;
     overflow: hidden;
 }
@@ -237,6 +236,7 @@ function barWidth(val, key) {
     justify-content: center;
     cursor: pointer;
     padding: 0;
+    flex-shrink: 0;
     transition: border-color 0.15s, background 0.15s;
 }
 
