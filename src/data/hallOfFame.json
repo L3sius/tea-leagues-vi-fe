@@ -10,8 +10,8 @@
     "id": 2,
     "title": "The Forbidden Word",
     "description": "Convince Harry to say \"Pregnant\" in clan chat. No context provided.",
-    "completed": false,
-    "imageUrl": null
+    "completed": true,
+    "imageUrl": "/halloffame/pregnant.png"
   },
   {
     "id": 3,
