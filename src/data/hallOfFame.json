@@ -59,8 +59,8 @@
     "id": 9,
     "title": "First Blood",
     "description": "Obtain a rare unique on your very first kill count at a boss. Beginner's luck is an understatement.",
-    "completed": false,
-    "imageUrl": null
+    "completed": true,
+    "imageUrl": "/halloffame/spoon_justi.png"
   },
   {
     "id": 10,
