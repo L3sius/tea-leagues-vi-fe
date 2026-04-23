@@ -127,6 +127,14 @@ const AREAS = [
 
 const COMBAT_COLORS = { Melee: '#e03030', Range: '#4caf50', Magic: '#8080e0' }
 
+const AREA_ALIASES = {
+    'great kourend and kebos lowlands': 'Kourend',
+    'zeah': 'Kourend',
+}
+function normalizeArea(raw) {
+    return AREA_ALIASES[raw.toLowerCase()] ?? raw
+}
+
 // ── State ──
 const players = ref([])
 const loading = ref(false)
@@ -145,8 +153,9 @@ async function refresh() {
         ])
         players.value = [...names].map(name => ({
             name,
-            relics: (data.relics?.[name] ?? []).slice().sort((a, b) => a.tier - b.tier),
-            areas: data.regions?.[name] ?? [],
+            relics: (data.relics?.[name] ?? []).slice().sort((a, b) => a.tier - b.tier)
+                .map(r => ({ ...r, name: r.name.replace(/((?:^|\s)\w)/g, c => c.toUpperCase()) })),
+            areas: (data.regions?.[name] ?? []).map(normalizeArea),
             combatMastery: (data.combat_mastery?.[name] ?? []).slice().sort((a, b) => a.tier - b.tier),
         }))
     } catch (e) {
