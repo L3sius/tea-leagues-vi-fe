@@ -24,8 +24,8 @@
     "id": 4,
     "title": "Betrayal in the Raid",
     "description": "PK a TEA member mid-raid and flame them in clan chat. Friendship is temporary, loot is eternal.",
-    "completed": false,
-    "imageUrl": null
+    "completed": true,
+    "imageUrl": "/halloffame/pk.gif"
   },
   {
     "id": 5,
