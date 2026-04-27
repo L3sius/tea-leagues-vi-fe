@@ -3,8 +3,8 @@
     "id": 1,
     "title": "The High Alchemist",
     "description": "Alch an item worth over 100M. Turning gold into slightly less gold, at scale.",
-    "completed": false,
-    "imageUrl": null
+    "completed": true,
+    "imageUrl": "/halloffame/100m_alch.gif"
   },
   {
     "id": 2,
