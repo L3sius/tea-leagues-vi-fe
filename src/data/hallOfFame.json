@@ -45,8 +45,8 @@
     "id": 7,
     "title": "Dragon of TEA",
     "description": "First to reach Dragon Cup rank. Go take a shower.",
-    "completed": false,
-    "imageUrl": null
+    "completed": true,
+    "imageUrl": "/halloffame/cocodragoncup.png"
   },
   {
     "id": 8,
