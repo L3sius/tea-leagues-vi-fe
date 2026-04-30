@@ -52,8 +52,8 @@
     "id": 8,
     "title": "The Prophet",
     "description": "Call your drop in clan chat before actually receiving it, then get it. Proof required.",
-    "completed": false,
-    "imageUrl": null
+    "completed": true,
+    "imageUrl": "called_drop.png"
   },
   {
     "id": 9,
